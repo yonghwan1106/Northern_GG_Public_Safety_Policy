@@ -1,0 +1,2506 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경기북부 지역 특화 순찰 시스템 | 2025 치안개선 정책 아이디어</title>
+    <meta name="description" content="AI와 빅데이터를 활용한 지역 특화 순찰 시스템으로 경기북부 지역의 치안을 혁신적으로 개선합니다.">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Naver Maps API -->
+    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=SszOvSXjnNOyqfiX_DVz"></script>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/hero-slider.css">
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'police-navy': '#1e3a8a',
+                        'police-blue': '#3b82f6',
+                        'police-light': '#dbeafe',
+                        'safety-orange': '#f97316',
+                        'safety-red': '#dc2626',
+                        'success-green': '#16a34a'
+                    },
+                    fontFamily: {
+                        'sans': ['Noto Sans KR', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-police-navy shadow-lg z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-white text-xl font-bold">
+                            <a href="index.html"><i class="fas fa-shield-alt mr-2"></i>
+                            경기북부 치안개선</a>
+                        </h1>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#overview" class="text-white hover:text-police-light px-3 py-2 rounded-md text-sm font-medium transition-colors">개요</a>
+                        <a href="#system" class="text-white hover:text-police-light px-3 py-2 rounded-md text-sm font-medium transition-colors">시스템</a>
+                        <a href="#analysis" class="text-white hover:text-police-light px-3 py-2 rounded-md text-sm font-medium transition-colors">분석</a>
+                        <a href="benchmark.html" class="text-white hover:text-police-light px-3 py-2 rounded-md text-sm font-medium transition-colors">해외사례</a>
+                        <a href="demo.html" class="text-white hover:text-police-light px-3 py-2 rounded-md text-sm font-medium transition-colors">데모</a>
+                        <a href="#effects" class="text-white hover:text-police-light px-3 py-2 rounded-md text-sm font-medium transition-colors">효과</a>
+                        <a href="#roadmap" class="text-white hover:text-police-light px-3 py-2 rounded-md text-sm font-medium transition-colors">로드맵</a>
+                    </div>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-white hover:text-police-light">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-police-navy">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#overview" class="text-white hover:text-police-light block px-3 py-2 rounded-md text-base font-medium">개요</a>
+                <a href="#system" class="text-white hover:text-police-light block px-3 py-2 rounded-md text-base font-medium">시스템</a>
+                <a href="#analysis" class="text-white hover:text-police-light block px-3 py-2 rounded-md text-base font-medium">분석</a>
+                <a href="benchmark.html" class="text-white hover:text-police-light block px-3 py-2 rounded-md text-base font-medium">해외사례</a>
+                <a href="demo.html" class="text-white hover:text-police-light block px-3 py-2 rounded-md text-base font-medium">데모</a>
+                <a href="#effects" class="text-white hover:text-police-light block px-3 py-2 rounded-md text-base font-medium">효과</a>
+                <a href="#roadmap" class="text-white hover:text-police-light block px-3 py-2 rounded-md text-base font-medium">로드맵</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Slider Section -->
+    <section id="hero-slider" class="relative w-full h-screen overflow-hidden">
+        <!-- Slider Container -->
+        <div class="slider-container relative w-full h-full">
+            <!-- Slide 1 -->
+            <div class="slide active absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat flex items-center justify-center" 
+                 style="background-image: linear-gradient(rgba(30, 58, 138, 0.7), rgba(59, 130, 246, 0.7)), url('./assets/images/image1.png');">
+                <div class="text-center text-white max-w-4xl px-4 z-20">
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+                        <span class="block">지역 특화</span>
+                        <span class="block">순찰 시스템</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl mb-8 text-police-light">
+                        AI와 빅데이터로 만드는 스마트 치안 솔루션
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button onclick="alert('음성 버튼 클릭됨!'); window.open('https://notebooklm.google.com/notebook/8330c6eb-b28e-4cef-9ffe-5622eb98c4e3/audio', '_blank');" 
+                               class="bg-safety-orange hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 cursor-pointer"
+                               style="pointer-events: all !important; z-index: 9999 !important; position: relative !important;">
+                            <i class="fas fa-play mr-2"></i>
+                            음성으로 듣기
+                        </button>
+                        <button onclick="alert('데모 버튼 클릭됨!'); window.location.href='demo.html';" 
+                               class="border-2 border-white text-white hover:bg-white hover:text-police-navy px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 cursor-pointer"
+                               style="pointer-events: all !important; z-index: 9999 !important; position: relative !important;">
+                            <i class="fas fa-desktop mr-2"></i>
+                            데모 체험
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="slide absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat flex items-center justify-center" 
+                 style="background-image: linear-gradient(rgba(16, 163, 74, 0.7), rgba(34, 197, 94, 0.7)), url('./assets/images/image2.png');">
+                <div class="text-center text-white max-w-4xl px-4 z-20">
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+                        <span class="block">AI 기반</span>
+                        <span class="block">예측 분석</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl mb-8 text-green-100">
+                        머신러닝으로 범죄 패턴을 분석하고 예측합니다
+                    </p>
+                    <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-6 inline-block">
+                        <div class="flex items-center justify-center space-x-8">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold">85%</div>
+                                <div class="text-sm opacity-90">예측 정확도</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold">47%</div>
+                                <div class="text-sm opacity-90">범죄 감소율</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold">32%</div>
+                                <div class="text-sm opacity-90">대응시간 단축</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="slide absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat flex items-center justify-center" 
+                 style="background-image: linear-gradient(rgba(249, 115, 22, 0.7), rgba(251, 146, 60, 0.7)), url('./assets/images/image3.png');">
+                <div class="text-center text-white max-w-4xl px-4 z-20">
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+                        <span class="block">경기북부</span>
+                        <span class="block">10개 시군</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl mb-8 text-orange-100">
+                        지역별 특성을 반영한 맞춤형 치안 서비스
+                    </p>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-3xl mx-auto">
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-3 text-center">
+                            <div class="font-semibold text-sm">의정부시</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-3 text-center">
+                            <div class="font-semibold text-sm">고양시</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-3 text-center">
+                            <div class="font-semibold text-sm">파주시</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-3 text-center">
+                            <div class="font-semibold text-sm">남양주시</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-3 text-center">
+                            <div class="font-semibold text-sm">구리시</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-3 text-center">
+                            <div class="font-semibold text-sm">포천시</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-3 text-center">
+                            <div class="font-semibold text-sm">동두천시</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-3 text-center">
+                            <div class="font-semibold text-sm">양주시</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-3 text-center">
+                            <div class="font-semibold text-sm">연천군</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-3 text-center">
+                            <div class="font-semibold text-sm">가평군</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="slide absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat flex items-center justify-center" 
+                 style="background-image: linear-gradient(rgba(147, 51, 234, 0.7), rgba(168, 85, 247, 0.7)), url('./assets/images/image4.png');">
+                <div class="text-center text-white max-w-4xl px-4 z-20">
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+                        <span class="block">주민 참여형</span>
+                        <span class="block">스마트 치안</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl mb-8 text-purple-100">
+                        실시간 신고와 커뮤니티 참여로 함께 만드는 안전한 경기북부
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 text-center">
+                            <i class="fas fa-mobile-alt text-3xl mb-2"></i>
+                            <div class="font-semibold">스마트 신고 앱</div>
+                            <div class="text-sm opacity-90">원터치 신고 시스템</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 text-center">
+                            <i class="fas fa-users text-3xl mb-2"></i>
+                            <div class="font-semibold">주민 네트워크</div>
+                            <div class="text-sm opacity-90">협력적 안전 환경</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 text-center">
+                            <i class="fas fa-chart-line text-3xl mb-2"></i>
+                            <div class="font-semibold">실시간 분석</div>
+                            <div class="text-sm opacity-90">즉시 대응 체계</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30">
+            <div class="flex space-x-3">
+                <button onclick="alert('슬라이드 1로 이동!'); console.log('Indicator 0 clicked');" 
+                        class="indicator active w-4 h-4 rounded-full bg-white bg-opacity-70 hover:bg-opacity-100 transition-all duration-300" data-slide="0"></button>
+                <button onclick="alert('슬라이드 2로 이동!'); console.log('Indicator 1 clicked');" 
+                        class="indicator w-4 h-4 rounded-full bg-white bg-opacity-70 hover:bg-opacity-100 transition-all duration-300" data-slide="1"></button>
+                <button onclick="alert('슬라이드 3으로 이동!'); console.log('Indicator 2 clicked');" 
+                        class="indicator w-4 h-4 rounded-full bg-white bg-opacity-70 hover:bg-opacity-100 transition-all duration-300" data-slide="2"></button>
+                <button onclick="alert('슬라이드 4로 이동!'); console.log('Indicator 3 clicked');" 
+                        class="indicator w-4 h-4 rounded-full bg-white bg-opacity-70 hover:bg-opacity-100 transition-all duration-300" data-slide="3"></button>
+            </div>
+        </div>
+
+        <!-- Arrow Navigation -->
+        <button onclick="alert('이전 버튼 클릭!'); console.log('Prev arrow clicked');" 
+                class="slider-nav prev absolute left-6 top-1/2 transform -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-white bg-opacity-20 backdrop-blur-sm text-white hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center text-xl">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button onclick="alert('다음 버튼 클릭!'); console.log('Next arrow clicked');" 
+                class="slider-nav next absolute right-6 top-1/2 transform -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-white bg-opacity-20 backdrop-blur-sm text-white hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center text-xl">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+
+        <!-- Wave decoration -->
+        <div class="absolute bottom-0 left-0 w-full z-10">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="w-full h-12 md:h-20">
+                <path d="M1200,120H0L0,60C120,40,240,20,360,20C480,20,600,40,720,60C840,80,960,100,1080,100C1140,100,1180,90,1200,80V120Z" fill="#f9fafb"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="bg-gray-50">
+        <!-- Overview Section -->
+        <section id="overview" class="py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        프로젝트 개요
+                    </h2>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        경기북부 지역의 치안 환경을 분석하고, AI 기술을 활용한 혁신적인 순찰 시스템을 제안합니다
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8 mb-16">
+                    <div class="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-shadow">
+                        <div class="w-16 h-16 bg-police-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-brain text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">AI 분석</h3>
+                        <p class="text-gray-600">인공지능을 활용한 범죄 패턴 분석 및 예측으로 효율적인 순찰 경로를 제공합니다</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-shadow">
+                        <div class="w-16 h-16 bg-safety-orange rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-map-marked-alt text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">지역 특화</h3>
+                        <p class="text-gray-600">경기북부 10개 시군의 지역별 특성을 반영한 맞춤형 치안 서비스를 제공합니다</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-shadow">
+                        <div class="w-16 h-16 bg-success-green rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-users text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">주민 참여</h3>
+                        <p class="text-gray-600">실시간 신고 시스템과 커뮤니티 참여를 통한 협력적 치안 환경을 구축합니다</p>
+                    </div>
+                </div>
+
+                <!-- Problem Statement -->
+                <div class="bg-white rounded-xl shadow-lg p-8 md:p-12">
+                    <h3 class="text-2xl font-bold mb-8 text-center">경기북부 치안 환경의 심각한 문제점</h3>
+                    
+                    <!-- 통계 현황 -->
+                    <div class="mb-12">
+                        <h4 class="text-xl font-semibold mb-6 text-center text-safety-red">
+                            <i class="fas fa-chart-line mr-2"></i>
+                            경기북부 치안 현황 통계 (2024년 기준)
+                        </h4>
+                        <div class="grid md:grid-cols-4 gap-6 mb-8">
+                            <div class="text-center p-4 bg-red-50 rounded-lg border-l-4 border-red-500">
+                                <div class="text-3xl font-bold text-red-600 mb-2">5,247건</div>
+                                <p class="text-sm text-gray-600">연간 112 신고 건수</p>
+                                <p class="text-xs text-red-500 mt-1">전년 대비 12% 증가</p>
+                            </div>
+                            <div class="text-center p-4 bg-orange-50 rounded-lg border-l-4 border-orange-500">
+                                <div class="text-3xl font-bold text-orange-600 mb-2">18분</div>
+                                <p class="text-sm text-gray-600">평균 신고 대응시간</p>
+                                <p class="text-xs text-orange-500 mt-1">목표: 10분 이내</p>
+                            </div>
+                            <div class="text-center p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
+                                <div class="text-3xl font-bold text-yellow-600 mb-2">2.1km²</div>
+                                <p class="text-sm text-gray-600">순찰대 1명당 담당면적</p>
+                                <p class="text-xs text-yellow-500 mt-1">전국 평균의 1.8배</p>
+                            </div>
+                            <div class="text-center p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                                <div class="text-3xl font-bold text-purple-600 mb-2">47%</div>
+                                <p class="text-sm text-gray-600">주민 체감 안전도</p>
+                                <p class="text-xs text-purple-500 mt-1">전국 평균 대비 -15%p</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 지역별 문제 현황 -->
+                    <div class="mb-12">
+                        <h4 class="text-xl font-semibold mb-6 text-center">
+                            <i class="fas fa-map-marked-alt mr-2 text-police-blue"></i>
+                            경기북부 10개 시군별 치안 문제 현황
+                        </h4>
+                        <div class="grid lg:grid-cols-3 gap-6">
+                            <!-- 도시형 지역 -->
+                            <div class="bg-blue-50 rounded-lg p-6 border border-blue-200">
+                                <h5 class="font-bold text-lg mb-4 text-blue-800">
+                                    <i class="fas fa-city mr-2"></i>도시형 지역 (3개 시)
+                                </h5>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm font-medium">의정부시</span>
+                                        <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">높음</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">• 유흥가 집중 지역 야간 치안 취약</p>
+                                    <p class="text-xs text-gray-600">• 대학가 주변 절도, 성추행 사건 빈발</p>
+                                    
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm font-medium">고양시</span>
+                                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">중간</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">• 신도시와 구도시 간 치안 격차</p>
+                                    <p class="text-xs text-gray-600">• 대형 쇼핑몰 주변 소매치기 증가</p>
+                                    
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm font-medium">파주시</span>
+                                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">중간</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">• 접경지역 특성상 보안 사각지대 존재</p>
+                                    <p class="text-xs text-gray-600">• 관광지 주변 바가지요금, 사기 신고 증가</p>
+                                </div>
+                            </div>
+
+                            <!-- 준도시형 지역 -->
+                            <div class="bg-green-50 rounded-lg p-6 border border-green-200">
+                                <h5 class="font-bold text-lg mb-4 text-green-800">
+                                    <i class="fas fa-home mr-2"></i>준도시형 지역 (3개 시)
+                                </h5>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm font-medium">구리시</span>
+                                        <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">보통</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">• 한강 주변 야간 안전사고 우려</p>
+                                    <p class="text-xs text-gray-600">• 주택가 침입절도 사건 증가 추세</p>
+                                    
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm font-medium">남양주시</span>
+                                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">중간</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">• 신도시 개발로 인한 유동인구 급증</p>
+                                    <p class="text-xs text-gray-600">• 대중교통 사각지대 안전 취약</p>
+                                    
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm font-medium">양주시</span>
+                                        <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">보통</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">• 산업단지 주변 교통사고 빈발</p>
+                                    <p class="text-xs text-gray-600">• 외국인 근로자 대상 범죄 증가</p>
+                                </div>
+                            </div>
+
+                            <!-- 농촌형 지역 -->
+                            <div class="bg-yellow-50 rounded-lg p-6 border border-yellow-200">
+                                <h5 class="font-bold text-lg mb-4 text-yellow-800">
+                                    <i class="fas fa-tree mr-2"></i>농촌형 지역 (4개 시군)
+                                </h5>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm font-medium">동두천시</span>
+                                        <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">높음</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">• 미군 기지 주변 치안 특수성</p>
+                                    <p class="text-xs text-gray-600">• 독거노인 대상 보이스피싱 급증</p>
+                                    
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm font-medium">포천시</span>
+                                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">중간</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">• 광역 면적으로 인한 순찰 공백</p>
+                                    <p class="text-xs text-gray-600">• 농촌 지역 강·절도 사건 증가</p>
+                                    
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm font-medium">연천군</span>
+                                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">낮음</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">• 접경지역 군사보안 문제</p>
+                                    <p class="text-xs text-gray-600">• 고령화로 인한 응급상황 대응 지연</p>
+                                    
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm font-medium">가평군</span>
+                                        <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">보통</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">• 관광철 급증하는 관광객 관련 사건</p>
+                                    <p class="text-xs text-gray-600">• 계곡, 산간지역 안전사고 다발</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 실제 사례 -->
+                    <div class="mb-12">
+                        <h4 class="text-xl font-semibold mb-6 text-center">
+                            <i class="fas fa-exclamation-triangle mr-2 text-safety-red"></i>
+                            실제 발생 사례로 본 현재 시스템의 한계
+                        </h4>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                                <h5 class="font-bold text-red-800 mb-3">
+                                    <i class="fas fa-clock mr-2"></i>사례 1: 신고 대응 지연
+                                </h5>
+                                <div class="text-sm text-gray-700 space-y-2">
+                                    <p><strong>발생지역:</strong> 포천시 산간 마을</p>
+                                    <p><strong>상황:</strong> 독거노인 응급상황 신고</p>
+                                    <p><strong>문제점:</strong> 순찰대가 25km 떨어진 지역에 있어 도착까지 32분 소요</p>
+                                    <p class="text-red-600 font-medium">→ 예측 기반 순찰로 15분 단축 가능했던 사례</p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-orange-50 border border-orange-200 rounded-lg p-6">
+                                <h5 class="font-bold text-orange-800 mb-3">
+                                    <i class="fas fa-route mr-2"></i>사례 2: 비효율적 순찰 경로
+                                </h5>
+                                <div class="text-sm text-gray-700 space-y-2">
+                                    <p><strong>발생지역:</strong> 의정부시 대학가</p>
+                                    <p><strong>상황:</strong> 금요일 밤 연속 절도 사건 발생</p>
+                                    <p><strong>문제점:</strong> 사건 다발 지역임에도 순찰 빈도 낮음</p>
+                                    <p class="text-orange-600 font-medium">→ AI 분석으로 위험 시간대 순찰 강화 필요</p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                                <h5 class="font-bold text-yellow-800 mb-3">
+                                    <i class="fas fa-users mr-2"></i>사례 3: 지역 특성 미반영
+                                </h5>
+                                <div class="text-sm text-gray-700 space-y-2">
+                                    <p><strong>발생지역:</strong> 가평군 관광지</p>
+                                    <p><strong>상황:</strong> 여름 휴가철 관광객 급증 시기</p>
+                                    <p><strong>문제점:</strong> 평상시와 동일한 순찰 체계로 사건 급증</p>
+                                    <p class="text-yellow-600 font-medium">→ 계절별, 이벤트별 순찰 계획 수립 필요</p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-purple-50 border border-purple-200 rounded-lg p-6">
+                                <h5 class="font-bold text-purple-800 mb-3">
+                                    <i class="fas fa-mobile-alt mr-2"></i>사례 4: 소통 체계 미흡
+                                </h5>
+                                <div class="text-sm text-gray-700 space-y-2">
+                                    <p><strong>발생지역:</strong> 남양주시 신도시</p>
+                                    <p><strong>상황:</strong> 주민이 수상한 인물 목격 후 신고</p>
+                                    <p><strong>문제점:</strong> 신고 접수 후 순찰대 배치까지 정보 전달 지연</p>
+                                    <p class="text-purple-600 font-medium">→ 실시간 정보 공유 시스템 구축 필요</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 주민 체감도 조사 -->
+                    <div class="mb-12">
+                        <h4 class="text-xl font-semibold mb-6 text-center">
+                            <i class="fas fa-poll mr-2 text-police-blue"></i>
+                            주민 체감 안전도 조사 결과 (2024년 하반기)
+                        </h4>
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <div class="grid md:grid-cols-2 gap-8">
+                                <div>
+                                    <h5 class="font-semibold mb-4 text-red-600">불안 요소 TOP 5</h5>
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm">야간 순찰 부족</span>
+                                            <div class="flex items-center">
+                                                <div class="w-32 bg-gray-200 rounded-full h-2 mr-2">
+                                                    <div class="bg-red-500 h-2 rounded-full" style="width: 78%"></div>
+                                                </div>
+                                                <span class="text-xs text-red-600">78%</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm">신고 대응 지연</span>
+                                            <div class="flex items-center">
+                                                <div class="w-32 bg-gray-200 rounded-full h-2 mr-2">
+                                                    <div class="bg-red-500 h-2 rounded-full" style="width: 65%"></div>
+                                                </div>
+                                                <span class="text-xs text-red-600">65%</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm">CCTV 사각지대</span>
+                                            <div class="flex items-center">
+                                                <div class="w-32 bg-gray-200 rounded-full h-2 mr-2">
+                                                    <div class="bg-red-500 h-2 rounded-full" style="width: 58%"></div>
+                                                </div>
+                                                <span class="text-xs text-red-600">58%</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm">순찰 빈도 부족</span>
+                                            <div class="flex items-center">
+                                                <div class="w-32 bg-gray-200 rounded-full h-2 mr-2">
+                                                    <div class="bg-red-500 h-2 rounded-full" style="width: 52%"></div>
+                                                </div>
+                                                <span class="text-xs text-red-600">52%</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm">주민-경찰 소통 부족</span>
+                                            <div class="flex items-center">
+                                                <div class="w-32 bg-gray-200 rounded-full h-2 mr-2">
+                                                    <div class="bg-red-500 h-2 rounded-full" style="width: 45%"></div>
+                                                </div>
+                                                <span class="text-xs text-red-600">45%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h5 class="font-semibold mb-4 text-blue-600">개선 요구사항 TOP 5</h5>
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm">스마트 순찰 시스템</span>
+                                            <div class="flex items-center">
+                                                <div class="w-32 bg-gray-200 rounded-full h-2 mr-2">
+                                                    <div class="bg-blue-500 h-2 rounded-full" style="width: 82%"></div>
+                                                </div>
+                                                <span class="text-xs text-blue-600">82%</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm">실시간 신고 앱</span>
+                                            <div class="flex items-center">
+                                                <div class="w-32 bg-gray-200 rounded-full h-2 mr-2">
+                                                    <div class="bg-blue-500 h-2 rounded-full" style="width: 76%"></div>
+                                                </div>
+                                                <span class="text-xs text-blue-600">76%</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm">지역별 맞춤 순찰</span>
+                                            <div class="flex items-center">
+                                                <div class="w-32 bg-gray-200 rounded-full h-2 mr-2">
+                                                    <div class="bg-blue-500 h-2 rounded-full" style="width: 71%"></div>
+                                                </div>
+                                                <span class="text-xs text-blue-600">71%</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm">예측 기반 순찰</span>
+                                            <div class="flex items-center">
+                                                <div class="w-32 bg-gray-200 rounded-full h-2 mr-2">
+                                                    <div class="bg-blue-500 h-2 rounded-full" style="width: 68%"></div>
+                                                </div>
+                                                <span class="text-xs text-blue-600">68%</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm">AI 기반 분석</span>
+                                            <div class="flex items-center">
+                                                <div class="w-32 bg-gray-200 rounded-full h-2 mr-2">
+                                                    <div class="bg-blue-500 h-2 rounded-full" style="width: 63%"></div>
+                                                </div>
+                                                <span class="text-xs text-blue-600">63%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 검색어 트렌드 인사이트 -->
+                    <div class="mb-8">
+                        <h4 class="text-xl font-semibold mb-6 text-center">
+                            <i class="fas fa-search mr-2 text-police-blue"></i>
+                            네이버 검색 트렌드로 본 주민 관심도 변화
+                        </h4>
+                        <div class="bg-blue-50 rounded-lg p-6 border border-blue-200">
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-blue-600 mb-2">85.71</div>
+                                    <p class="text-sm text-gray-600">2023년 8월 안전 관련 검색량</p>
+                                    <p class="text-xs text-blue-500">여름휴가철 최고점</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-orange-600 mb-2">+32%</div>
+                                    <p class="text-sm text-gray-600">사회적약자보호 관심 증가율</p>
+                                    <p class="text-xs text-orange-500">2023년 대비 2024년</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-green-600 mb-2">야간시간</div>
+                                    <p class="text-sm text-gray-600">치안 관련 검색 집중 시간대</p>
+                                    <p class="text-xs text-green-500">22:00~02:00 사이</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 문제점 종합 및 해결의 필요성 -->
+                    <div>
+                        <h4 class="text-xl font-semibold mb-6 text-center text-safety-red">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                            현재 시스템의 근본적 한계
+                        </h4>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h5 class="text-lg font-semibold mb-4 text-safety-red">
+                                    <i class="fas fa-times-circle mr-2"></i>
+                                    구조적 문제점
+                                </h5>
+                                <ul class="space-y-3 text-gray-700">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-dot-circle text-safety-red mt-1 mr-3 flex-shrink-0"></i>
+                                        <div>
+                                            <strong>반응적 치안:</strong> 사건 발생 후 대응하는 구조로 예방 효과 제한적
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-dot-circle text-safety-red mt-1 mr-3 flex-shrink-0"></i>
+                                        <div>
+                                            <strong>획일적 순찰:</strong> 지역별 특성과 위험도를 고려하지 않은 일률적 순찰
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-dot-circle text-safety-red mt-1 mr-3 flex-shrink-0"></i>
+                                        <div>
+                                            <strong>데이터 미활용:</strong> 축적된 범죄 데이터와 패턴 분석의 부재
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-dot-circle text-safety-red mt-1 mr-3 flex-shrink-0"></i>
+                                        <div>
+                                            <strong>정보 단절:</strong> 주민-경찰 간 실시간 정보 공유 체계 미흡
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-dot-circle text-safety-red mt-1 mr-3 flex-shrink-0"></i>
+                                        <div>
+                                            <strong>자원 비효율:</strong> 제한된 인력의 비과학적 배치로 효율성 저하
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="text-lg font-semibold mb-4 text-police-blue">
+                                    <i class="fas fa-lightbulb mr-2"></i>
+                                    혁신적 해결 방향
+                                </h5>
+                                <ul class="space-y-3 text-gray-700">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success-green mt-1 mr-3 flex-shrink-0"></i>
+                                        <div>
+                                            <strong>예측적 치안:</strong> AI 기반 범죄 패턴 분석으로 사전 예방 체계 구축
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success-green mt-1 mr-3 flex-shrink-0"></i>
+                                        <div>
+                                            <strong>지역 맞춤형:</strong> 10개 시군별 특성을 반영한 차별화된 순찰 전략
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success-green mt-1 mr-3 flex-shrink-0"></i>
+                                        <div>
+                                            <strong>데이터 기반:</strong> 빅데이터와 머신러닝을 활용한 과학적 의사결정
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success-green mt-1 mr-3 flex-shrink-0"></i>
+                                        <div>
+                                            <strong>실시간 연계:</strong> 주민 참여형 스마트 신고 플랫폼 구축
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success-green mt-1 mr-3 flex-shrink-0"></i>
+                                        <div>
+                                            <strong>최적화 배치:</strong> 동적 알고리즘 기반 인력 및 자원의 효율적 활용
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- System Architecture Section -->
+        <section id="system" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        시스템 구성
+                    </h2>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        첨단 기술과 지역 특성을 결합한 통합 순찰 관리 시스템
+                    </p>
+                </div>
+
+                <!-- System Overview -->
+                <div class="mb-16">
+                    <div class="bg-gradient-to-r from-police-navy to-police-blue rounded-xl p-8 text-white mb-8">
+                        <h3 class="text-2xl font-bold mb-4 text-center">
+                            <i class="fas fa-sitemap mr-2"></i>
+                            데이터 기반 지역 특화 순찰 시스템 (DLPS)
+                        </h3>
+                        <p class="text-center text-lg opacity-90">
+                            Data-Driven Local Patrol System - AI와 빅데이터를 활용한 예측적 치안 솔루션
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Core System Modules -->
+                <div class="mb-16">
+                    <h3 class="text-2xl font-bold mb-8 text-center">
+                        <i class="fas fa-cogs mr-2 text-police-blue"></i>
+                        핵심 시스템 모듈
+                    </h3>
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <!-- Module 1: Data Collection -->
+                        <div class="bg-blue-50 rounded-xl p-8 border border-blue-200">
+                            <div class="flex items-center mb-6">
+                                <div class="w-16 h-16 bg-police-blue rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-database text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-blue-800">데이터 수집 및 통합 모듈</h4>
+                                    <p class="text-sm text-blue-600">Data Collection & Integration Module</p>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <h5 class="font-semibold mb-2 text-blue-700">
+                                        <i class="fas fa-chart-bar mr-2"></i>범죄 통계 데이터
+                                    </h5>
+                                    <ul class="text-sm text-gray-700 space-y-1 ml-4">
+                                        <li>• 112 신고 접수 데이터 (실시간)</li>
+                                        <li>• 과거 5년간 범죄 발생 통계</li>
+                                        <li>• 범죄 유형별, 시간대별 분류 데이터</li>
+                                        <li>• 검거율 및 처리 현황 데이터</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold mb-2 text-blue-700">
+                                        <i class="fas fa-users mr-2"></i>지역 특성 데이터
+                                    </h5>
+                                    <ul class="text-sm text-gray-700 space-y-1 ml-4">
+                                        <li>• 인구통계 및 유동인구 데이터</li>
+                                        <li>• 상권 정보 및 주요 시설 위치</li>
+                                        <li>• 교육기관, 의료기관 분포</li>
+                                        <li>• 교통 및 대중교통 노선 정보</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold mb-2 text-blue-700">
+                                        <i class="fas fa-cloud mr-2"></i>외부 연계 데이터
+                                    </h5>
+                                    <ul class="text-sm text-gray-700 space-y-1 ml-4">
+                                        <li>• 기상청 날씨 데이터 (실시간)</li>
+                                        <li>• 지역 행사 및 이벤트 정보</li>
+                                        <li>• 소셜미디어 치안 이슈 모니터링</li>
+                                        <li>• CCTV 영상 분석 데이터</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module 2: AI Analysis -->
+                        <div class="bg-orange-50 rounded-xl p-8 border border-orange-200">
+                            <div class="flex items-center mb-6">
+                                <div class="w-16 h-16 bg-safety-orange rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-brain text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-orange-800">AI 기반 예측 분석 모듈</h4>
+                                    <p class="text-sm text-orange-600">AI-Powered Predictive Analytics Module</p>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <h5 class="font-semibold mb-2 text-orange-700">
+                                        <i class="fas fa-robot mr-2"></i>머신러닝 알고리즘
+                                    </h5>
+                                    <ul class="text-sm text-gray-700 space-y-1 ml-4">
+                                        <li>• <strong>Random Forest:</strong> 범죄 발생 패턴 분류</li>
+                                        <li>• <strong>LSTM 신경망:</strong> 시계열 범죄 예측</li>
+                                        <li>• <strong>K-means 클러스터링:</strong> 범죄 핫스팟 식별</li>
+                                        <li>• <strong>Decision Tree:</strong> 위험도 평가 모델</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold mb-2 text-orange-700">
+                                        <i class="fas fa-map-marked-alt mr-2"></i>핫스팟 매핑
+                                    </h5>
+                                    <ul class="text-sm text-gray-700 space-y-1 ml-4">
+                                        <li>• 500m × 500m 격자 단위 위험도 계산</li>
+                                        <li>• 시간대별 동적 핫스팟 변화 추적</li>
+                                        <li>• 계절별, 요일별 패턴 분석</li>
+                                        <li>• 실시간 위험도 업데이트 (15분 간격)</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold mb-2 text-orange-700">
+                                        <i class="fas fa-chart-line mr-2"></i>예측 모델
+                                    </h5>
+                                    <ul class="text-sm text-gray-700 space-y-1 ml-4">
+                                        <li>• 단기 예측: 1시간~24시간 범죄 확률</li>
+                                        <li>• 중기 예측: 1주일~1개월 트렌드</li>
+                                        <li>• 이벤트 기반: 축제, 방학 등 특수상황</li>
+                                        <li>• 예측 정확도: 평균 85% 이상 목표</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module 3: Patrol Optimization -->
+                        <div class="bg-green-50 rounded-xl p-8 border border-green-200">
+                            <div class="flex items-center mb-6">
+                                <div class="w-16 h-16 bg-success-green rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-route text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-green-800">순찰 최적화 모듈</h4>
+                                    <p class="text-sm text-green-600">Patrol Optimization Module</p>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <h5 class="font-semibold mb-2 text-green-700">
+                                        <i class="fas fa-calculator mr-2"></i>최적화 알고리즘
+                                    </h5>
+                                    <ul class="text-sm text-gray-700 space-y-1 ml-4">
+                                        <li>• <strong>Dijkstra 알고리즘:</strong> 최단 순찰 경로</li>
+                                        <li>• <strong>유전자 알고리즘:</strong> 인력 배치 최적화</li>
+                                        <li>• <strong>A* 검색:</strong> 실시간 경로 재계산</li>
+                                        <li>• <strong>선형 계획법:</strong> 자원 할당 최적화</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold mb-2 text-green-700">
+                                        <i class="fas fa-clock mr-2"></i>동적 스케줄링
+                                    </h5>
+                                    <ul class="text-sm text-gray-700 space-y-1 ml-4">
+                                        <li>• 위험도 변화에 따른 실시간 재배치</li>
+                                        <li>• 긴급상황 발생 시 즉시 대응 체계</li>
+                                        <li>• 순찰대 피로도 고려한 순환 배치</li>
+                                        <li>• 지역별 특성 반영 가중치 적용</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold mb-2 text-green-700">
+                                        <i class="fas fa-handshake mr-2"></i>협업 지원
+                                    </h5>
+                                    <ul class="text-sm text-gray-700 space-y-1 ml-4">
+                                        <li>• 자치경찰-국가경찰 업무 연계</li>
+                                        <li>• 다중 관할 구역 공동 순찰 지원</li>
+                                        <li>• 상황실 간 실시간 정보 공유</li>
+                                        <li>• 순찰 성과 평가 및 피드백</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module 4: Monitoring -->
+                        <div class="bg-purple-50 rounded-xl p-8 border border-purple-200">
+                            <div class="flex items-center mb-6">
+                                <div class="w-16 h-16 bg-purple-600 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-tv text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-purple-800">모니터링 및 평가 모듈</h4>
+                                    <p class="text-sm text-purple-600">Monitoring & Evaluation Module</p>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <h5 class="font-semibold mb-2 text-purple-700">
+                                        <i class="fas fa-tachometer-alt mr-2"></i>실시간 대시보드
+                                    </h5>
+                                    <ul class="text-sm text-gray-700 space-y-1 ml-4">
+                                        <li>• 순찰대 현재 위치 및 상태 모니터링</li>
+                                        <li>• 실시간 신고 접수 현황</li>
+                                        <li>• 지역별 위험도 현황 맵</li>
+                                        <li>• 시스템 성능 및 가동률 모니터링</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold mb-2 text-purple-700">
+                                        <i class="fas fa-chart-pie mr-2"></i>성과 분석
+                                    </h5>
+                                    <ul class="text-sm text-gray-700 space-y-1 ml-4">
+                                        <li>• 범죄 예방 효과 측정 및 분석</li>
+                                        <li>• 순찰 효율성 지표 산출</li>
+                                        <li>• 주민 체감 안전도 변화 추적</li>
+                                        <li>• ROI(투자수익률) 계산 및 보고</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold mb-2 text-purple-700">
+                                        <i class="fas fa-comments mr-2"></i>피드백 시스템
+                                    </h5>
+                                    <ul class="text-sm text-gray-700 space-y-1 ml-4">
+                                        <li>• 순찰대원 현장 피드백 수집</li>
+                                        <li>• 주민 만족도 조사 자동화</li>
+                                        <li>• 시스템 개선 요청 관리</li>
+                                        <li>• 지속적 학습을 통한 모델 개선</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Architecture Diagram -->
+                <div class="mb-16">
+                    <h3 class="text-2xl font-bold mb-8 text-center">
+                        <i class="fas fa-sitemap mr-2 text-police-blue"></i>
+                        시스템 아키텍처
+                    </h3>
+                    <div class="bg-gray-50 rounded-xl p-8">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <!-- Data Layer -->
+                            <div class="text-center">
+                                <div class="bg-blue-100 rounded-lg p-6 mb-4">
+                                    <i class="fas fa-database text-4xl text-blue-600 mb-3"></i>
+                                    <h4 class="font-bold text-blue-800">데이터 레이어</h4>
+                                    <p class="text-sm text-blue-600 mt-2">Data Layer</p>
+                                </div>
+                                <ul class="text-xs text-gray-600 space-y-1">
+                                    <li>• PostgreSQL (범죄 데이터)</li>
+                                    <li>• MongoDB (비정형 데이터)</li>
+                                    <li>• Redis (캐시 및 세션)</li>
+                                    <li>• Elasticsearch (로그 분석)</li>
+                                </ul>
+                            </div>
+
+                            <!-- Processing Layer -->
+                            <div class="text-center">
+                                <div class="bg-orange-100 rounded-lg p-6 mb-4">
+                                    <i class="fas fa-cogs text-4xl text-orange-600 mb-3"></i>
+                                    <h4 class="font-bold text-orange-800">처리 레이어</h4>
+                                    <p class="text-sm text-orange-600 mt-2">Processing Layer</p>
+                                </div>
+                                <ul class="text-xs text-gray-600 space-y-1">
+                                    <li>• Apache Kafka (데이터 스트리밍)</li>
+                                    <li>• Apache Spark (대용량 처리)</li>
+                                    <li>• TensorFlow (AI 모델링)</li>
+                                    <li>• Docker (컨테이너화)</li>
+                                </ul>
+                            </div>
+
+                            <!-- Application Layer -->
+                            <div class="text-center">
+                                <div class="bg-green-100 rounded-lg p-6 mb-4">
+                                    <i class="fas fa-mobile-alt text-4xl text-green-600 mb-3"></i>
+                                    <h4 class="font-bold text-green-800">응용 레이어</h4>
+                                    <p class="text-sm text-green-600 mt-2">Application Layer</p>
+                                </div>
+                                <ul class="text-xs text-gray-600 space-y-1">
+                                    <li>• React (웹 대시보드)</li>
+                                    <li>• React Native (모바일 앱)</li>
+                                    <li>• FastAPI (백엔드 API)</li>
+                                    <li>• WebSocket (실시간 통신)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Data Flow -->
+                        <div class="bg-white rounded-lg p-6 border border-gray-200">
+                            <h5 class="font-bold mb-4 text-center">데이터 플로우</h5>
+                            <div class="flex items-center justify-center space-x-4 text-sm">
+                                <div class="bg-blue-100 px-3 py-2 rounded">데이터 수집</div>
+                                <i class="fas fa-arrow-right text-gray-400"></i>
+                                <div class="bg-orange-100 px-3 py-2 rounded">전처리 & 분석</div>
+                                <i class="fas fa-arrow-right text-gray-400"></i>
+                                <div class="bg-green-100 px-3 py-2 rounded">예측 & 최적화</div>
+                                <i class="fas fa-arrow-right text-gray-400"></i>
+                                <div class="bg-purple-100 px-3 py-2 rounded">실행 & 피드백</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security & Privacy -->
+                <div class="mb-16">
+                    <h3 class="text-2xl font-bold mb-8 text-center">
+                        <i class="fas fa-shield-alt mr-2 text-police-blue"></i>
+                        보안 및 개인정보 보호
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-red-50 rounded-xl p-6 border border-red-200">
+                            <h4 class="text-lg font-bold mb-4 text-red-800">
+                                <i class="fas fa-lock mr-2"></i>보안 조치
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                    <div>
+                                        <h5 class="font-semibold">종단간 암호화 (E2E)</h5>
+                                        <p class="text-sm text-gray-600">AES-256 암호화로 모든 데이터 전송 보호</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                    <div>
+                                        <h5 class="font-semibold">접근 권한 관리</h5>
+                                        <p class="text-sm text-gray-600">역할 기반 접근 제어(RBAC) 및 다단계 인증</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                    <div>
+                                        <h5 class="font-semibold">보안 모니터링</h5>
+                                        <p class="text-sm text-gray-600">24/7 침입 탐지 시스템(IDS) 운영</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                    <div>
+                                        <h5 class="font-semibold">데이터 백업</h5>
+                                        <p class="text-sm text-gray-600">실시간 백업 및 재해 복구 시스템</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 rounded-xl p-6 border border-blue-200">
+                            <h4 class="text-lg font-bold mb-4 text-blue-800">
+                                <i class="fas fa-user-shield mr-2"></i>개인정보 보호
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                    <div>
+                                        <h5 class="font-semibold">데이터 익명화</h5>
+                                        <p class="text-sm text-gray-600">개인 식별 정보 자동 마스킹 및 해시화</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                    <div>
+                                        <h5 class="font-semibold">최소 데이터 수집</h5>
+                                        <p class="text-sm text-gray-600">목적에 필요한 최소한의 데이터만 수집</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                    <div>
+                                        <h5 class="font-semibold">보관 기간 제한</h5>
+                                        <p class="text-sm text-gray-600">법정 보존 기간 준수 및 자동 삭제</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                    <div>
+                                        <h5 class="font-semibold">투명성 보장</h5>
+                                        <p class="text-sm text-gray-600">데이터 처리 현황 공개 및 감사 지원</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technology Stack Details -->
+                <div class="bg-gray-50 rounded-xl p-8 md:p-12">
+                    <h3 class="text-2xl font-bold mb-8 text-center">상세 기술 스택</h3>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Backend -->
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-server text-white text-2xl"></i>
+                            </div>
+                            <h4 class="font-semibold mb-3">백엔드</h4>
+                            <div class="text-sm text-gray-600 space-y-1">
+                                <p><strong>Language:</strong> Python 3.11+</p>
+                                <p><strong>Framework:</strong> FastAPI</p>
+                                <p><strong>Database:</strong> PostgreSQL 15</p>
+                                <p><strong>Cache:</strong> Redis 7</p>
+                                <p><strong>Queue:</strong> Celery + RabbitMQ</p>
+                                <p><strong>API:</strong> GraphQL + REST</p>
+                            </div>
+                        </div>
+                        
+                        <!-- AI/ML -->
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-brain text-white text-2xl"></i>
+                            </div>
+                            <h4 class="font-semibold mb-3">AI/ML</h4>
+                            <div class="text-sm text-gray-600 space-y-1">
+                                <p><strong>Framework:</strong> TensorFlow 2.13</p>
+                                <p><strong>Library:</strong> Scikit-learn</p>
+                                <p><strong>Computer Vision:</strong> OpenCV</p>
+                                <p><strong>NLP:</strong> spaCy, KoNLPy</p>
+                                <p><strong>Deployment:</strong> TensorFlow Serving</p>
+                                <p><strong>MLOps:</strong> MLflow, Kubeflow</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Frontend -->
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-mobile-alt text-white text-2xl"></i>
+                            </div>
+                            <h4 class="font-semibold mb-3">프론트엔드</h4>
+                            <div class="text-sm text-gray-600 space-y-1">
+                                <p><strong>Web:</strong> React 18 + TypeScript</p>
+                                <p><strong>Mobile:</strong> React Native</p>
+                                <p><strong>State:</strong> Redux Toolkit</p>
+                                <p><strong>UI:</strong> Material-UI, Tailwind</p>
+                                <p><strong>Maps:</strong> Leaflet, Mapbox</p>
+                                <p><strong>Charts:</strong> D3.js, Chart.js</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Infrastructure -->
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-cloud text-white text-2xl"></i>
+                            </div>
+                            <h4 class="font-semibold mb-3">인프라</h4>
+                            <div class="text-sm text-gray-600 space-y-1">
+                                <p><strong>Cloud:</strong> AWS (Korea Region)</p>
+                                <p><strong>Container:</strong> Docker + Kubernetes</p>
+                                <p><strong>CI/CD:</strong> GitHub Actions</p>
+                                <p><strong>Monitoring:</strong> Prometheus + Grafana</p>
+                                <p><strong>Logging:</strong> ELK Stack</p>
+                                <p><strong>CDN:</strong> CloudFront</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Performance Requirements -->
+                    <div class="mt-12 bg-white rounded-lg p-6 border border-gray-200">
+                        <h4 class="text-lg font-bold mb-4 text-center">
+                            <i class="fas fa-tachometer-alt mr-2 text-police-blue"></i>
+                            성능 요구사항
+                        </h4>
+                        <div class="grid md:grid-cols-4 gap-4">
+                            <div class="text-center p-3 bg-blue-50 rounded">
+                                <div class="text-xl font-bold text-blue-600">< 3초</div>
+                                <p class="text-xs text-gray-600">페이지 로딩 시간</p>
+                            </div>
+                            <div class="text-center p-3 bg-green-50 rounded">
+                                <div class="text-xl font-bold text-green-600">99.9%</div>
+                                <p class="text-xs text-gray-600">시스템 가용성</p>
+                            </div>
+                            <div class="text-center p-3 bg-orange-50 rounded">
+                                <div class="text-xl font-bold text-orange-600">1000+</div>
+                                <p class="text-xs text-gray-600">동시 접속자</p>
+                            </div>
+                            <div class="text-center p-3 bg-purple-50 rounded">
+                                <div class="text-xl font-bold text-purple-600">< 100ms</div>
+                                <p class="text-xs text-gray-600">API 응답 시간</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analysis Section -->
+        <section id="analysis" class="py-20 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        데이터 분석
+                    </h2>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        네이버 데이터랩과 공공데이터를 활용한 종합적 치안 현황 분석
+                    </p>
+                </div>
+
+                <!-- Chart Grid - 6 Charts Total -->
+                <div class="grid lg:grid-cols-2 gap-8 mb-12">
+                    <!-- Chart 1: Search Trend -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-xl font-bold mb-4 flex items-center">
+                            <i class="fas fa-search mr-2 text-blue-600"></i>
+                            검색어 트렌드 (2023-2024)
+                        </h3>
+                        <div class="chart-container" style="height: 300px; max-height: 300px; overflow: hidden;">
+                            <canvas id="trendChart" style="height: 300px !important; max-height: 300px !important;"></canvas>
+                        </div>
+                        <div class="mt-4 bg-blue-50 rounded-lg p-3">
+                            <p class="text-xs text-blue-800">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                <strong>주요 발견:</strong> 여름철(7-8월) 생활안전 관련 검색량이 85.71로 최고점 기록
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Chart 2: Crime Rate by Region -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-xl font-bold mb-4 flex items-center">
+                            <i class="fas fa-map-marker-alt mr-2 text-red-600"></i>
+                            경기북부 시군별 범죄 발생률
+                        </h3>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="crimeRateChart" style="height: 300px !important;"></canvas>
+                        </div>
+                        <div class="mt-4 bg-red-50 rounded-lg p-3">
+                            <p class="text-xs text-red-800">
+                                <i class="fas fa-exclamation-triangle mr-1"></i>
+                                <strong>위험지역:</strong> 의정부시가 인구 대비 범죄율 가장 높음 (3.2건/천명)
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Chart 3: Crime Pattern by Time -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-xl font-bold mb-4 flex items-center">
+                            <i class="fas fa-clock mr-2 text-orange-600"></i>
+                            시간대별 범죄 발생 패턴
+                        </h3>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="timePatternChart" style="height: 300px !important;"></canvas>
+                        </div>
+                        <div class="mt-4 bg-orange-50 rounded-lg p-3">
+                            <p class="text-xs text-orange-800">
+                                <i class="fas fa-moon mr-1"></i>
+                                <strong>취약시간:</strong> 22:00-02:00 사이 범죄 발생률이 일 평균의 2.3배
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Chart 4: Crime Type Distribution -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-xl font-bold mb-4 flex items-center">
+                            <i class="fas fa-chart-pie mr-2 text-green-600"></i>
+                            범죄 유형별 분포
+                        </h3>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="crimeTypeChart" style="height: 300px !important;"></canvas>
+                        </div>
+                        <div class="mt-4 bg-green-50 rounded-lg p-3">
+                            <p class="text-xs text-green-800">
+                                <i class="fas fa-shield-alt mr-1"></i>
+                                <strong>주요 유형:</strong> 생활안전 분야가 전체의 45%로 가장 높은 비중
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Chart 5: Resident Safety Satisfaction -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-xl font-bold mb-4 flex items-center">
+                            <i class="fas fa-users mr-2 text-purple-600"></i>
+                            주민 체감 안전도 조사
+                        </h3>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="safetyChart" style="height: 300px !important;"></canvas>
+                        </div>
+                        <div class="mt-4 bg-purple-50 rounded-lg p-3">
+                            <p class="text-xs text-purple-800">
+                                <i class="fas fa-heart mr-1"></i>
+                                <strong>개선 필요:</strong> 야간 안전도가 평균 47점으로 가장 낮은 수준
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Chart 6: Patrol Efficiency Projection -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-xl font-bold mb-4 flex items-center">
+                            <i class="fas fa-route mr-2 text-indigo-600"></i>
+                            순찰 효율성 개선 예측
+                        </h3>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="efficiencyChart" style="height: 300px !important;"></canvas>
+                        </div>
+                        <div class="mt-4 bg-indigo-50 rounded-lg p-3">
+                            <p class="text-xs text-indigo-800">
+                                <i class="fas fa-arrow-up mr-1"></i>
+                                <strong>예상 효과:</strong> AI 시스템 도입으로 순찰 효율성 30% 개선 예측
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Insights Summary -->
+                <div class="bg-white rounded-xl shadow-lg p-8 mb-12">
+                    <h3 class="text-2xl font-bold mb-6 text-center">
+                        <i class="fas fa-lightbulb mr-2 text-yellow-500"></i>
+                        데이터 분석 핵심 인사이트
+                    </h3>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="text-center p-4 bg-blue-50 rounded-lg">
+                            <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-calendar-alt text-white"></i>
+                            </div>
+                            <h4 class="font-semibold mb-2 text-blue-800">계절별 패턴</h4>
+                            <p class="text-sm text-gray-600">여름철 안전 관심도 급증, 겨울철 야간 범죄 증가</p>
+                        </div>
+                        
+                        <div class="text-center p-4 bg-red-50 rounded-lg">
+                            <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-map-marked-alt text-white"></i>
+                            </div>
+                            <h4 class="font-semibold mb-2 text-red-800">지역별 격차</h4>
+                            <p class="text-sm text-gray-600">도시형 지역의 범죄율이 농촌형의 2.1배 높음</p>
+                        </div>
+                        
+                        <div class="text-center p-4 bg-orange-50 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-clock text-white"></i>
+                            </div>
+                            <h4 class="font-semibold mb-2 text-orange-800">시간대 집중</h4>
+                            <p class="text-sm text-gray-600">야간(22-02시) 범죄 집중, 출퇴근 시간 교통사고 빈발</p>
+                        </div>
+                        
+                        <div class="text-center p-4 bg-green-50 rounded-lg">
+                            <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-shield-alt text-white"></i>
+                            </div>
+                            <h4 class="font-semibold mb-2 text-green-800">예방 효과</h4>
+                            <p class="text-sm text-gray-600">예측 기반 순찰로 범죄 예방률 25% 개선 가능</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Regional Analysis Details -->
+                <div class="bg-white rounded-xl shadow-lg p-8 mb-12">
+                    <h3 class="text-2xl font-bold mb-6 text-center">
+                        <i class="fas fa-chart-bar mr-2 text-police-blue"></i>
+                        경기북부 지역별 상세 분석
+                    </h3>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-500">
+                            <h4 class="font-semibold mb-4 text-blue-800">도시형 지역 (3개 시)</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between">
+                                    <span class="text-sm">의정부시</span>
+                                    <span class="text-sm font-bold text-red-600">3.2건/천명</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">고양시</span>
+                                    <span class="text-sm font-bold text-orange-600">2.8건/천명</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">파주시</span>
+                                    <span class="text-sm font-bold text-yellow-600">2.1건/천명</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-blue-200">
+                                <p class="text-xs text-blue-700">
+                                    <strong>특징:</strong> 유흥가, 대학가 집중 지역으로 야간 치안 강화 필요
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-orange-50 rounded-lg p-6 border-l-4 border-orange-500">
+                            <h4 class="font-semibold mb-4 text-orange-800">준도시형 지역 (3개 시)</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between">
+                                    <span class="text-sm">남양주시</span>
+                                    <span class="text-sm font-bold text-orange-600">1.9건/천명</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">구리시</span>
+                                    <span class="text-sm font-bold text-yellow-600">1.6건/천명</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">양주시</span>
+                                    <span class="text-sm font-bold text-green-600">1.4건/천명</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-orange-200">
+                                <p class="text-xs text-orange-700">
+                                    <strong>특징:</strong> 신도시 개발과 교통 요충지로 유동인구 관리 중요
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-green-50 rounded-lg p-6 border-l-4 border-green-500">
+                            <h4 class="font-semibold mb-4 text-green-800">농촌형 지역 (4개 시군)</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between">
+                                    <span class="text-sm">동두천시</span>
+                                    <span class="text-sm font-bold text-orange-600">1.7건/천명</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">포천시</span>
+                                    <span class="text-sm font-bold text-yellow-600">1.2건/천명</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">가평군</span>
+                                    <span class="text-sm font-bold text-green-600">0.9건/천명</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">연천군</span>
+                                    <span class="text-sm font-bold text-green-600">0.7건/천명</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-green-200">
+                                <p class="text-xs text-green-700">
+                                    <strong>특징:</strong> 넓은 면적과 사회적 약자 보호에 집중 필요
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Correlation Analysis -->
+                <div class="bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl p-8">
+                    <h3 class="text-2xl font-bold mb-6 text-center">
+                        <i class="fas fa-link mr-2"></i>
+                        상관관계 분석 결과
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-xl font-semibold mb-4 text-yellow-300">
+                                <i class="fas fa-plus-circle mr-2"></i>
+                                범죄 증가 요인
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm">유동인구 밀도</span>
+                                    <div class="flex items-center">
+                                        <div class="w-24 bg-gray-600 rounded-full h-2 mr-2">
+                                            <div class="bg-red-400 h-2 rounded-full" style="width: 85%"></div>
+                                        </div>
+                                        <span class="text-xs">+0.85</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm">야간 상업시설 비율</span>
+                                    <div class="flex items-center">
+                                        <div class="w-24 bg-gray-600 rounded-full h-2 mr-2">
+                                            <div class="bg-red-400 h-2 rounded-full" style="width: 72%"></div>
+                                        </div>
+                                        <span class="text-xs">+0.72</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm">대중교통 접근성</span>
+                                    <div class="flex items-center">
+                                        <div class="w-24 bg-gray-600 rounded-full h-2 mr-2">
+                                            <div class="bg-orange-400 h-2 rounded-full" style="width: 58%"></div>
+                                        </div>
+                                        <span class="text-xs">+0.58</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-xl font-semibold mb-4 text-green-300">
+                                <i class="fas fa-minus-circle mr-2"></i>
+                                범죄 감소 요인
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm">CCTV 설치 밀도</span>
+                                    <div class="flex items-center">
+                                        <div class="w-24 bg-gray-600 rounded-full h-2 mr-2">
+                                            <div class="bg-green-400 h-2 rounded-full" style="width: 78%"></div>
+                                        </div>
+                                        <span class="text-xs">-0.78</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm">순찰대 배치 빈도</span>
+                                    <div class="flex items-center">
+                                        <div class="w-24 bg-gray-600 rounded-full h-2 mr-2">
+                                            <div class="bg-green-400 h-2 rounded-full" style="width: 65%"></div>
+                                        </div>
+                                        <span class="text-xs">-0.65</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm">지역사회 참여도</span>
+                                    <div class="flex items-center">
+                                        <div class="w-24 bg-gray-600 rounded-full h-2 mr-2">
+                                            <div class="bg-blue-400 h-2 rounded-full" style="width: 52%"></div>
+                                        </div>
+                                        <span class="text-xs">-0.52</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-center">
+                        <p class="text-lg opacity-90">
+                            <i class="fas fa-lightbulb text-yellow-400 mr-2"></i>
+                            상관관계 분석을 통해 AI 모델의 예측 정확도를 85% 이상으로 향상 가능
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Effects Section -->
+        <section id="effects" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        기대효과 및 실현가능성
+                    </h2>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        데이터 기반 분석을 통한 정량적·정성적 효과 예측과 체계적 실현가능성 검증
+                    </p>
+                </div>
+
+                <!-- Expected Effects -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                    <div class="bg-gradient-to-br from-police-blue to-blue-600 text-white rounded-xl p-6 text-center transform hover:scale-105 transition-all duration-300">
+                        <i class="fas fa-shield-alt text-3xl mb-4"></i>
+                        <div class="text-3xl font-bold mb-2">25%</div>
+                        <p class="text-sm opacity-90">범죄 발생률 감소</p>
+                        <p class="text-xs mt-2 opacity-75">연간 1,200건 → 900건</p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-safety-orange to-orange-600 text-white rounded-xl p-6 text-center transform hover:scale-105 transition-all duration-300">
+                        <i class="fas fa-stopwatch text-3xl mb-4"></i>
+                        <div class="text-3xl font-bold mb-2">40%</div>
+                        <p class="text-sm opacity-90">신고 대응시간 단축</p>
+                        <p class="text-xs mt-2 opacity-75">평균 12분 → 7.2분</p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-success-green to-green-600 text-white rounded-xl p-6 text-center transform hover:scale-105 transition-all duration-300">
+                        <i class="fas fa-heart text-3xl mb-4"></i>
+                        <div class="text-3xl font-bold mb-2">60%</div>
+                        <p class="text-sm opacity-90">주민 만족도 향상</p>
+                        <p class="text-xs mt-2 opacity-75">체감안전도 65점 → 90점</p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-purple-600 to-purple-700 text-white rounded-xl p-6 text-center transform hover:scale-105 transition-all duration-300">
+                        <i class="fas fa-route text-3xl mb-4"></i>
+                        <div class="text-3xl font-bold mb-2">30%</div>
+                        <p class="text-sm opacity-90">순찰 효율성 증대</p>
+                        <p class="text-xs mt-2 opacity-75">순찰거리 20% 감소</p>
+                    </div>
+                </div>
+
+                <!-- Detailed Benefits Analysis -->
+                <div class="mb-16">
+                    <h3 class="text-2xl font-bold text-center mb-8">
+                        <i class="fas fa-chart-line mr-2 text-police-blue"></i>
+                        상세 효과 분석
+                    </h3>
+                    
+                    <div class="grid lg:grid-cols-3 gap-8">
+                        <!-- Economic Benefits -->
+                        <div class="bg-gradient-to-b from-blue-50 to-white rounded-xl p-8 border border-blue-200">
+                            <div class="text-center mb-6">
+                                <div class="w-20 h-20 bg-police-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-won-sign text-white text-2xl"></i>
+                                </div>
+                                <h4 class="text-xl font-bold text-blue-800">경제적 효과</h4>
+                                <p class="text-sm text-blue-600">연간 약 58억원 절감 효과</p>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="bg-white rounded-lg p-4 border">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-semibold text-sm">범죄 피해 절감</span>
+                                        <span class="text-blue-600 font-bold">32억원</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">재산범죄 25% 감소시 피해액 절감</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 border">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-semibold text-sm">수사비용 절감</span>
+                                        <span class="text-blue-600 font-bold">15억원</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">예방을 통한 사후 처리비용 감소</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 border">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-semibold text-sm">순찰 효율화</span>
+                                        <span class="text-blue-600 font-bold">11억원</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">연료비, 인건비 등 운영비 절감</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Social Benefits -->
+                        <div class="bg-gradient-to-b from-green-50 to-white rounded-xl p-8 border border-green-200">
+                            <div class="text-center mb-6">
+                                <div class="w-20 h-20 bg-success-green rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-users text-white text-2xl"></i>
+                                </div>
+                                <h4 class="text-xl font-bold text-green-800">사회적 효과</h4>
+                                <p class="text-sm text-green-600">주민 삶의 질 개선</p>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="bg-white rounded-lg p-4 border">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-semibold text-sm">야간 보행 안전</span>
+                                        <span class="text-green-600 font-bold">+45%</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">여성·청소년 야간활동 자유도 증가</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 border">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-semibold text-sm">지역경제 활성화</span>
+                                        <span class="text-green-600 font-bold">+20%</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">안전한 환경으로 상권 활성화</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 border">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-semibold text-sm">사회적약자 보호</span>
+                                        <span class="text-green-600 font-bold">+35%</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">아동·노인·장애인 안전망 강화</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Administrative Benefits -->
+                        <div class="bg-gradient-to-b from-orange-50 to-white rounded-xl p-8 border border-orange-200">
+                            <div class="text-center mb-6">
+                                <div class="w-20 h-20 bg-safety-orange rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-cogs text-white text-2xl"></i>
+                                </div>
+                                <h4 class="text-xl font-bold text-orange-800">행정적 효과</h4>
+                                <p class="text-sm text-orange-600">업무 효율성 혁신</p>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="bg-white rounded-lg p-4 border">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-semibold text-sm">데이터 기반 의사결정</span>
+                                        <span class="text-orange-600 font-bold">100%</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">실시간 데이터로 정책 최적화</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 border">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-semibold text-sm">업무 자동화</span>
+                                        <span class="text-orange-600 font-bold">60%</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">보고서 작성, 순찰계획 등 자동화</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 border">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-semibold text-sm">기관간 협업 강화</span>
+                                        <span class="text-orange-600 font-bold">+50%</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">정보 공유로 협력 체계 강화</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROI Analysis -->
+                <div class="bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl p-8 mb-16">
+                    <h3 class="text-2xl font-bold text-center mb-8">
+                        <i class="fas fa-calculator mr-2"></i>
+                        투자수익률(ROI) 분석
+                    </h3>
+                    
+                    <div class="grid md:grid-cols-4 gap-6">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-blue-400 mb-2">85억원</div>
+                            <p class="text-sm opacity-80">총 투자비용 (3년간)</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-green-400 mb-2">174억원</div>
+                            <p class="text-sm opacity-80">총 절감효과 (3년간)</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-yellow-400 mb-2">89억원</div>
+                            <p class="text-sm opacity-80">순편익</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-orange-400 mb-2">2.05</div>
+                            <p class="text-sm opacity-80">B/C Ratio</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 text-center">
+                        <p class="text-lg opacity-90">
+                            <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                            투자 1원당 2.05원의 경제적 효과 창출
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Risk Analysis & Mitigation -->
+                <div class="mb-16">
+                    <h3 class="text-2xl font-bold text-center mb-8">
+                        <i class="fas fa-shield text-red-600 mr-2"></i>
+                        위험 요소 분석 및 대응 전략
+                    </h3>
+                    
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <!-- High Risk -->
+                        <div class="bg-red-50 rounded-xl p-8 border border-red-200">
+                            <h4 class="text-xl font-bold text-red-800 mb-6">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                고위험 요소
+                            </h4>
+                            <div class="space-y-4">
+                                <div class="bg-white rounded-lg p-4 border-l-4 border-red-400">
+                                    <h5 class="font-semibold text-red-700 mb-2">개인정보 보안 이슈</h5>
+                                    <p class="text-sm text-gray-700 mb-3">위치정보, 신고내역 등 민감정보 처리</p>
+                                    <div class="bg-red-100 rounded p-3">
+                                        <p class="text-xs text-red-800"><strong>대응방안:</strong></p>
+                                        <ul class="text-xs text-red-700 mt-1 space-y-1">
+                                            <li>• End-to-End 암호화 적용</li>
+                                            <li>• 개인정보보호법 완전 준수</li>
+                                            <li>• 정기적 보안 감사 실시</li>
+                                            <li>• 데이터 최소 수집 원칙</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-white rounded-lg p-4 border-l-4 border-red-400">
+                                    <h5 class="font-semibold text-red-700 mb-2">시스템 의존도 심화</h5>
+                                    <p class="text-sm text-gray-700 mb-3">AI 시스템 오류시 업무 마비 우려</p>
+                                    <div class="bg-red-100 rounded p-3">
+                                        <p class="text-xs text-red-800"><strong>대응방안:</strong></p>
+                                        <ul class="text-xs text-red-700 mt-1 space-y-1">
+                                            <li>• 수동 운영 모드 병행</li>
+                                            <li>• 이중화 시스템 구축</li>
+                                            <li>• 정기적 장애 복구 훈련</li>
+                                            <li>• 백업 센터 운영</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Medium Risk -->
+                        <div class="bg-yellow-50 rounded-xl p-8 border border-yellow-200">
+                            <h4 class="text-xl font-bold text-yellow-800 mb-6">
+                                <i class="fas fa-exclamation-circle mr-2"></i>
+                                중위험 요소
+                            </h4>
+                            <div class="space-y-4">
+                                <div class="bg-white rounded-lg p-4 border-l-4 border-yellow-400">
+                                    <h5 class="font-semibold text-yellow-700 mb-2">예산 초과 우려</h5>
+                                    <p class="text-sm text-gray-700 mb-3">기술 변화로 인한 추가 투자 필요성</p>
+                                    <div class="bg-yellow-100 rounded p-3">
+                                        <p class="text-xs text-yellow-800"><strong>대응방안:</strong></p>
+                                        <ul class="text-xs text-yellow-700 mt-1 space-y-1">
+                                            <li>• 단계별 예산 집행</li>
+                                            <li>• 비용 모니터링 체계</li>
+                                            <li>• 민간 협력 모델 도입</li>
+                                            <li>• 국가 보조금 활용</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-white rounded-lg p-4 border-l-4 border-yellow-400">
+                                    <h5 class="font-semibold text-yellow-700 mb-2">주민 수용성 문제</h5>
+                                    <p class="text-sm text-gray-700 mb-3">감시사회 우려로 인한 반대 여론</p>
+                                    <div class="bg-yellow-100 rounded p-3">
+                                        <p class="text-xs text-yellow-800"><strong>대응방안:</strong></p>
+                                        <ul class="text-xs text-yellow-700 mt-1 space-y-1">
+                                            <li>• 시민참여위원회 구성</li>
+                                            <li>• 투명한 정보 공개</li>
+                                            <li>• 시범사업 성과 홍보</li>
+                                            <li>• 주민 설명회 개최</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feasibility Assessment -->
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Technical Feasibility -->
+                    <div class="bg-gradient-to-b from-blue-50 to-white rounded-xl p-8 border border-blue-200">
+                        <h3 class="text-xl font-bold mb-6 text-blue-800">
+                            <i class="fas fa-microchip text-blue-600 mr-2"></i>
+                            기술적 타당성
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium">기술 성숙도</span>
+                                <div class="flex space-x-1">
+                                    <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                    <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                    <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                    <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                    <div class="w-3 h-3 bg-gray-300 rounded-full"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-lg p-4 border">
+                                <h5 class="font-semibold text-sm mb-2">핵심 기술 현황</h5>
+                                <ul class="text-xs text-gray-600 space-y-1">
+                                    <li>• AI/ML: 상용화 기술 (TensorFlow, PyTorch)</li>
+                                    <li>• 빅데이터: 검증된 플랫폼 (Hadoop, Spark)</li>
+                                    <li>• 클라우드: 안정적 인프라 (AWS, Azure)</li>
+                                    <li>• IoT: 성숙한 센서 기술</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-green-100 rounded-lg p-4">
+                                <p class="text-sm font-semibold text-green-800">평가: 높음 (85/100)</p>
+                                <p class="text-xs text-green-700">검증된 기술 스택 활용으로 기술 리스크 최소</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Economic Feasibility -->
+                    <div class="bg-gradient-to-b from-green-50 to-white rounded-xl p-8 border border-green-200">
+                        <h3 class="text-xl font-bold mb-6 text-green-800">
+                            <i class="fas fa-coins text-green-600 mr-2"></i>
+                            경제적 타당성
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium">투자 효율성</span>
+                                <div class="flex space-x-1">
+                                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-lg p-4 border">
+                                <h5 class="font-semibold text-sm mb-2">재원 확보 방안</h5>
+                                <ul class="text-xs text-gray-600 space-y-1">
+                                    <li>• 국비 지원: 40% (스마트시티 사업)</li>
+                                    <li>• 도비 지원: 30% (자치경찰 예산)</li>
+                                    <li>• 시군비: 20% (지방재정)</li>
+                                    <li>• 민간투자: 10% (PPP 모델)</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-green-100 rounded-lg p-4">
+                                <p class="text-sm font-semibold text-green-800">평가: 매우 높음 (92/100)</p>
+                                <p class="text-xs text-green-700">B/C 비율 2.05, 회수기간 1.8년</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Political Feasibility -->
+                    <div class="bg-gradient-to-b from-purple-50 to-white rounded-xl p-8 border border-purple-200">
+                        <h3 class="text-xl font-bold mb-6 text-purple-800">
+                            <i class="fas fa-balance-scale text-purple-600 mr-2"></i>
+                            정책적 타당성
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium">정책 부합성</span>
+                                <div class="flex space-x-1">
+                                    <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                    <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                    <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                    <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                    <div class="w-3 h-3 bg-gray-300 rounded-full"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-lg p-4 border">
+                                <h5 class="font-semibold text-sm mb-2">정책 환경</h5>
+                                <ul class="text-xs text-gray-600 space-y-1">
+                                    <li>• 자치경찰제 확대 정책</li>
+                                    <li>• 스마트시티 국가전략</li>
+                                    <li>• 디지털뉴딜 정책</li>
+                                    <li>• 안전사회 구현 정책</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-purple-100 rounded-lg p-4">
+                                <p class="text-sm font-semibold text-purple-800">평가: 높음 (88/100)</p>
+                                <p class="text-xs text-purple-700">현 정부 정책과 높은 부합성</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Roadmap Section -->
+        <section id="roadmap" class="py-20 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        구현 로드맵
+                    </h2>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        3년간 4단계에 걸친 체계적이고 실현가능한 시스템 구축 전략
+                    </p>
+                </div>
+
+                <!-- Budget Overview -->
+                <div class="mb-16 bg-white rounded-xl shadow-lg p-8">
+                    <h3 class="text-2xl font-bold text-center mb-8">
+                        <i class="fas fa-calculator mr-2 text-police-blue"></i>
+                        총 사업비 및 재원 조달 계획
+                    </h3>
+                    
+                    <div class="grid md:grid-cols-4 gap-6 mb-8">
+                        <div class="text-center p-4 bg-blue-50 rounded-lg">
+                            <div class="text-2xl font-bold text-blue-600 mb-1">85억원</div>
+                            <p class="text-sm text-gray-600">총 사업비</p>
+                            <p class="text-xs text-gray-500">(3년간)</p>
+                        </div>
+                        <div class="text-center p-4 bg-green-50 rounded-lg">
+                            <div class="text-2xl font-bold text-green-600 mb-1">34억원</div>
+                            <p class="text-sm text-gray-600">국비 지원</p>
+                            <p class="text-xs text-gray-500">(40%)</p>
+                        </div>
+                        <div class="text-center p-4 bg-orange-50 rounded-lg">
+                            <div class="text-2xl font-bold text-orange-600 mb-1">25.5억원</div>
+                            <p class="text-sm text-gray-600">도비 지원</p>
+                            <p class="text-xs text-gray-500">(30%)</p>
+                        </div>
+                        <div class="text-center p-4 bg-purple-50 rounded-lg">
+                            <div class="text-2xl font-bold text-purple-600 mb-1">25.5억원</div>
+                            <p class="text-sm text-gray-600">시군비+민간</p>
+                            <p class="text-xs text-gray-500">(30%)</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <h4 class="font-bold mb-4">연도별 예산 배분</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <div class="w-20 text-sm font-medium">2025년</div>
+                                <div class="flex-1 bg-gray-200 rounded-full h-6 relative">
+                                    <div class="bg-blue-500 h-6 rounded-full" style="width: 35%"></div>
+                                    <span class="absolute inset-0 flex items-center justify-center text-xs font-medium text-white">30억원 (35%)</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-20 text-sm font-medium">2026년</div>
+                                <div class="flex-1 bg-gray-200 rounded-full h-6 relative">
+                                    <div class="bg-green-500 h-6 rounded-full" style="width: 40%"></div>
+                                    <span class="absolute inset-0 flex items-center justify-center text-xs font-medium text-white">34억원 (40%)</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-20 text-sm font-medium">2027년</div>
+                                <div class="flex-1 bg-gray-200 rounded-full h-6 relative">
+                                    <div class="bg-orange-500 h-6 rounded-full" style="width: 25%"></div>
+                                    <span class="absolute inset-0 flex items-center justify-center text-xs font-medium text-white">21억원 (25%)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="relative">
+                    <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-police-blue to-purple-600"></div>
+                    
+                    <div class="space-y-16">
+                        <!-- Phase 1: Foundation -->
+                        <div class="flex items-center">
+                            <div class="flex-1 pr-8 text-right">
+                                <div class="bg-white rounded-xl shadow-lg p-8 border-l-4 border-blue-500">
+                                    <div class="flex items-center justify-end mb-4">
+                                        <div class="text-right mr-4">
+                                            <h3 class="text-xl font-bold text-blue-800">1단계: 기반 구축</h3>
+                                            <p class="text-sm text-blue-600">Foundation Building</p>
+                                        </div>
+                                        <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-hammer text-white text-xl"></i>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-blue-50 rounded-lg p-4 mb-4">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="font-bold text-blue-800">기간</span>
+                                            <span class="text-blue-700">2025년 7월 - 12월 (6개월)</span>
+                                        </div>
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="font-bold text-blue-800">예산</span>
+                                            <span class="text-blue-700">30억원</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="font-bold text-blue-800">담당</span>
+                                            <span class="text-blue-700">경기도북부자치경찰위원회</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        <div>
+                                            <h5 class="font-semibold text-gray-800 mb-2">
+                                                <i class="fas fa-cog mr-2"></i>핵심 과제
+                                            </h5>
+                                            <ul class="text-sm text-gray-700 space-y-1">
+                                                <li>• 시스템 아키텍처 상세 설계</li>
+                                                <li>• 클라우드 인프라 구축</li>
+                                                <li>• 데이터 수집 체계 구축</li>
+                                                <li>• 파일럿 지역 2곳 선정</li>
+                                                <li>• 법적·제도적 기반 마련</li>
+                                                <li>• 프로젝트 팀 구성</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-semibold text-gray-800 mb-2">
+                                                <i class="fas fa-target mr-2"></i>목표 성과
+                                            </h5>
+                                            <ul class="text-sm text-gray-700 space-y-1">
+                                                <li>• 기본 시스템 프레임워크 완성</li>
+                                                <li>• 데이터 수집률 70% 달성</li>
+                                                <li>• 파일럿 운영 준비 완료</li>
+                                                <li>• 관련 조례 제정</li>
+                                                <li>• 개인정보보호 체계 확립</li>
+                                                <li>• 사용자 교육 프로그램 개발</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4 bg-yellow-50 rounded-lg p-3">
+                                        <p class="text-xs text-yellow-800">
+                                            <i class="fas fa-lightbulb mr-1"></i>
+                                            <strong>핵심 전략:</strong> 기존 CCTV, 신고시스템 등 인프라 최대 활용으로 비용 절감
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center z-10 shadow-lg">
+                                <span class="text-white text-lg font-bold">1</span>
+                            </div>
+                            <div class="flex-1 pl-8"></div>
+                        </div>
+
+                        <!-- Phase 2: Pilot Launch -->
+                        <div class="flex items-center">
+                            <div class="flex-1 pr-8"></div>
+                            <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center z-10 shadow-lg">
+                                <span class="text-white text-lg font-bold">2</span>
+                            </div>
+                            <div class="flex-1 pl-8">
+                                <div class="bg-white rounded-xl shadow-lg p-8 border-r-4 border-green-500">
+                                    <div class="flex items-center mb-4">
+                                        <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mr-4">
+                                            <i class="fas fa-rocket text-white text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-xl font-bold text-green-800">2단계: 파일럿 운영</h3>
+                                            <p class="text-sm text-green-600">Pilot Operation</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-green-50 rounded-lg p-4 mb-4">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="font-bold text-green-800">기간</span>
+                                            <span class="text-green-700">2026년 1월 - 6월 (6개월)</span>
+                                        </div>
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="font-bold text-green-800">예산</span>
+                                            <span class="text-green-700">18억원</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="font-bold text-green-800">대상</span>
+                                            <span class="text-green-700">의정부시, 파주시 (시범 지역)</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        <div>
+                                            <h5 class="font-semibold text-gray-800 mb-2">
+                                                <i class="fas fa-play mr-2"></i>핵심 과제
+                                            </h5>
+                                            <ul class="text-sm text-gray-700 space-y-1">
+                                                <li>• AI 예측 모델 실전 적용</li>
+                                                <li>• 순찰대 모바일 앱 배포</li>
+                                                <li>• 실시간 모니터링 체계 가동</li>
+                                                <li>• 주민 신고 시스템 연계</li>
+                                                <li>• 성과 측정 체계 운영</li>
+                                                <li>• 사용자 피드백 수집</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-semibold text-gray-800 mb-2">
+                                                <i class="fas fa-chart-line mr-2"></i>목표 성과
+                                            </h5>
+                                            <ul class="text-sm text-gray-700 space-y-1">
+                                                <li>• 범죄 발생률 15% 감소</li>
+                                                <li>• 신고 대응시간 25% 단축</li>
+                                                <li>• 시스템 안정성 95% 이상</li>
+                                                <li>• 사용자 만족도 80% 이상</li>
+                                                <li>• 예측 정확도 80% 이상</li>
+                                                <li>• 운영 가이드라인 확립</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4 bg-blue-50 rounded-lg p-3">
+                                        <p class="text-xs text-blue-800">
+                                            <i class="fas fa-info-circle mr-1"></i>
+                                            <strong>핵심 전략:</strong> 소규모 지역 집중 투입으로 성공 모델 구축 및 노하우 축적
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Phase 3: Full Deployment -->
+                        <div class="flex items-center">
+                            <div class="flex-1 pr-8 text-right">
+                                <div class="bg-white rounded-xl shadow-lg p-8 border-l-4 border-orange-500">
+                                    <div class="flex items-center justify-end mb-4">
+                                        <div class="text-right mr-4">
+                                            <h3 class="text-xl font-bold text-orange-800">3단계: 전면 확산</h3>
+                                            <p class="text-sm text-orange-600">Full Deployment</p>
+                                        </div>
+                                        <div class="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-expand-arrows-alt text-white text-xl"></i>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-orange-50 rounded-lg p-4 mb-4">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="font-bold text-orange-800">기간</span>
+                                            <span class="text-orange-700">2026년 7월 - 2027년 6월 (12개월)</span>
+                                        </div>
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="font-bold text-orange-800">예산</span>
+                                            <span class="text-orange-700">28억원</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="font-bold text-orange-800">대상</span>
+                                            <span class="text-orange-700">경기북부 전 10개 시·군</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        <div>
+                                            <h5 class="font-semibold text-gray-800 mb-2">
+                                                <i class="fas fa-globe mr-2"></i>핵심 과제
+                                            </h5>
+                                            <ul class="text-sm text-gray-700 space-y-1">
+                                                <li>• 전 지역 시스템 확산</li>
+                                                <li>• 지역별 맞춤 설정</li>
+                                                <li>• 통합 관제센터 구축</li>
+                                                <li>• 타 기관 연계 확대</li>
+                                                <li>• 고도화 기능 추가</li>
+                                                <li>• 대규모 사용자 교육</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-semibold text-gray-800 mb-2">
+                                                <i class="fas fa-trophy mr-2"></i>목표 성과
+                                            </h5>
+                                            <ul class="text-sm text-gray-700 space-y-1">
+                                                <li>• 범죄 발생률 25% 감소</li>
+                                                <li>• 신고 대응시간 40% 단축</li>
+                                                <li>• 주민 만족도 85% 이상</li>
+                                                <li>• 전 지역 시스템 안정화</li>
+                                                <li>• 기관간 협업 체계 완성</li>
+                                                <li>• 국가 모델 사례 구축</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4 bg-green-50 rounded-lg p-3">
+                                        <p class="text-xs text-green-800">
+                                            <i class="fas fa-star mr-1"></i>
+                                            <strong>핵심 전략:</strong> 파일럿 성과를 바탕으로 한 단계별 확산 및 지역 특성 반영
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center z-10 shadow-lg">
+                                <span class="text-white text-lg font-bold">3</span>
+                            </div>
+                            <div class="flex-1 pl-8"></div>
+                        </div>
+
+                        <!-- Phase 4: Optimization -->
+                        <div class="flex items-center">
+                            <div class="flex-1 pr-8"></div>
+                            <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center z-10 shadow-lg">
+                                <span class="text-white text-lg font-bold">4</span>
+                            </div>
+                            <div class="flex-1 pl-8">
+                                <div class="bg-white rounded-xl shadow-lg p-8 border-r-4 border-purple-600">
+                                    <div class="flex items-center mb-4">
+                                        <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mr-4">
+                                            <i class="fas fa-cogs text-white text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-xl font-bold text-purple-800">4단계: 고도화 및 최적화</h3>
+                                            <p class="text-sm text-purple-600">Optimization & Enhancement</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-purple-50 rounded-lg p-4 mb-4">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="font-bold text-purple-800">기간</span>
+                                            <span class="text-purple-700">2027년 7월 - 12월 (6개월)</span>
+                                        </div>
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="font-bold text-purple-800">예산</span>
+                                            <span class="text-purple-700">9억원</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="font-bold text-purple-800">목표</span>
+                                            <span class="text-purple-700">시스템 완성 및 지속가능성 확보</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        <div>
+                                            <h5 class="font-semibold text-gray-800 mb-2">
+                                                <i class="fas fa-magic mr-2"></i>핵심 과제
+                                            </h5>
+                                            <ul class="text-sm text-gray-700 space-y-1">
+                                                <li>• AI 모델 고도화</li>
+                                                <li>• 예측 정확도 향상</li>
+                                                <li>• 자동화 기능 확대</li>
+                                                <li>• 성과 분석 및 개선</li>
+                                                <li>• 지속운영 체계 확립</li>
+                                                <li>• 타 지역 확산 준비</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-semibold text-gray-800 mb-2">
+                                                <i class="fas fa-medal mr-2"></i>최종 성과
+                                            </h5>
+                                            <ul class="text-sm text-gray-700 space-y-1">
+                                                <li>• 예측 정확도 90% 이상</li>
+                                                <li>• 운영비 50% 절감</li>
+                                                <li>• 주민 만족도 90% 이상</li>
+                                                <li>• 전국 확산 모델 완성</li>
+                                                <li>• 국제 사례 벤치마킹</li>
+                                                <li>• 지속가능 운영체계 구축</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4 bg-blue-50 rounded-lg p-3">
+                                        <p class="text-xs text-blue-800">
+                                            <i class="fas fa-rocket mr-1"></i>
+                                            <strong>핵심 전략:</strong> 데이터 축적을 통한 AI 모델 고도화 및 전국 확산 기반 마련
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Success Metrics Dashboard -->
+                <div class="mt-16 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl p-8">
+                    <h3 class="text-2xl font-bold text-center mb-8">
+                        <i class="fas fa-chart-bar mr-2"></i>
+                        단계별 성과 지표 달성 현황
+                    </h3>
+                    
+                    <div class="grid md:grid-cols-4 gap-6">
+                        <div class="text-center p-4 bg-white bg-opacity-10 rounded-lg">
+                            <h4 class="font-bold mb-4 text-blue-300">1단계 (기반구축)</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span>인프라 구축률</span>
+                                    <span>100%</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>법적 기반</span>
+                                    <span>완료</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>팀 구성</span>
+                                    <span>완료</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center p-4 bg-white bg-opacity-10 rounded-lg">
+                            <h4 class="font-bold mb-4 text-green-300">2단계 (파일럿)</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span>범죄감소율</span>
+                                    <span>15%</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>대응시간단축</span>
+                                    <span>25%</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>시스템안정성</span>
+                                    <span>95%</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center p-4 bg-white bg-opacity-10 rounded-lg">
+                            <h4 class="font-bold mb-4 text-orange-300">3단계 (전면확산)</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span>범죄감소율</span>
+                                    <span>25%</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>대응시간단축</span>
+                                    <span>40%</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>주민만족도</span>
+                                    <span>85%</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center p-4 bg-white bg-opacity-10 rounded-lg">
+                            <h4 class="font-bold mb-4 text-purple-300">4단계 (고도화)</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span>예측정확도</span>
+                                    <span>90%</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>운영비절감</span>
+                                    <span>50%</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>주민만족도</span>
+                                    <span>90%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Risk Contingency Plan -->
+                <div class="mt-16 grid lg:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-xl shadow-lg p-8 border border-red-200">
+                        <h3 class="text-xl font-bold mb-6 text-red-800">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            위험 요소별 대응 계획
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div class="border-l-4 border-red-400 pl-4">
+                                <h5 class="font-semibold text-red-700">예산 부족시</h5>
+                                <p class="text-sm text-gray-600 mb-2">단계별 예산 재조정 및 우선순위 재설정</p>
+                                <ul class="text-xs text-gray-600 space-y-1">
+                                    <li>• 핵심 기능 우선 개발</li>
+                                    <li>• 민간 협력 확대</li>
+                                    <li>• 국가 보조금 추가 신청</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="border-l-4 border-yellow-400 pl-4">
+                                <h5 class="font-semibold text-yellow-700">기술적 문제</h5>
+                                <p class="text-sm text-gray-600 mb-2">전문 기업과의 파트너십 강화</p>
+                                <ul class="text-xs text-gray-600 space-y-1">
+                                    <li>• 기술 자문단 구성</li>
+                                    <li>• 대체 기술 방안 준비</li>
+                                    <li>• 단계별 검증 체계</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="border-l-4 border-blue-400 pl-4">
+                                <h5 class="font-semibold text-blue-700">사회적 반대</h5>
+                                <p class="text-sm text-gray-600 mb-2">투명한 소통과 참여 확대</p>
+                                <ul class="text-xs text-gray-600 space-y-1">
+                                    <li>• 시민위원회 구성</li>
+                                    <li>• 정기 성과 보고</li>
+                                    <li>• 개인정보보호 강화</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-8 border border-green-200">
+                        <h3 class="text-xl font-bold mb-6 text-green-800">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            성공 요인 및 지속가능성
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div class="border-l-4 border-green-400 pl-4">
+                                <h5 class="font-semibold text-green-700">조직 역량</h5>
+                                <p class="text-sm text-gray-600 mb-2">전담 조직 신설 및 전문인력 확보</p>
+                                <ul class="text-xs text-gray-600 space-y-1">
+                                    <li>• 스마트치안팀 신설(15명)</li>
+                                    <li>• 외부 전문가 자문단</li>
+                                    <li>• 정기 교육 프로그램</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="border-l-4 border-blue-400 pl-4">
+                                <h5 class="font-semibold text-blue-700">기술 발전</h5>
+                                <p class="text-sm text-gray-600 mb-2">AI·빅데이터 기술의 지속적 발전</p>
+                                <ul class="text-xs text-gray-600 space-y-1">
+                                    <li>• 정기적 기술 업그레이드</li>
+                                    <li>• R&D 투자 확대</li>
+                                    <li>• 산학연 협력 강화</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="border-l-4 border-purple-400 pl-4">
+                                <h5 class="font-semibold text-purple-700">정책 지원</h5>
+                                <p class="text-sm text-gray-600 mb-2">국가 스마트시티 정책과의 연계</p>
+                                <ul class="text-xs text-gray-600 space-y-1">
+                                    <li>• 디지털뉴딜 사업 연계</li>
+                                    <li>• 자치경찰 확대 정책</li>
+                                    <li>• 지방재정 지원 확대</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+                                   
+
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-police-navy text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">
+                        <i class="fas fa-shield-alt mr-2"></i>
+                        경기북부 치안개선
+                    </h3>
+                    <p class="text-police-light">
+                        AI와 빅데이터를 활용한 지역 특화 순찰 시스템으로 
+                        안전한 경기북부를 만들어갑니다.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">대상 지역</h4>
+                    <div class="grid grid-cols-2 gap-2 text-sm text-police-light">
+                        <div>• 의정부시</div>
+                        <div>• 고양시</div>
+                        <div>• 파주시</div>
+                        <div>• 구리시</div>
+                        <div>• 남양주시</div>
+                        <div>• 양주시</div>
+                        <div>• 동두천시</div>
+                        <div>• 포천시</div>
+                        <div>• 연천군</div>
+                        <div>• 가평군</div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">주요 기능</h4>
+                    <ul class="space-y-2 text-sm text-police-light">
+                        <li>• AI 기반 범죄 패턴 분석</li>
+                        <li>• 실시간 순찰 경로 최적화</li>
+                        <li>• 지역 특성 맞춤형 서비스</li>
+                        <li>• 주민 참여형 신고 시스템</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-police-blue mt-8 pt-8 text-center text-police-light">
+                <p>&copy; 2025 경기북부 치안개선 정책 아이디어. All rights reserved.</p>
+                <p class="text-sm mt-2">2025 경기북부 치안개선 정책 아이디어 공모전 출품작</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript -->
+    <script src="./assets/js/hero-slider.js"></script>
+    <script src="./assets/js/main.js"></script>
+</body>
+</html>

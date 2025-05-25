@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>해외 벤치마킹 분석 | 경기북부 지역 특화 순찰 시스템</title>
+    <meta name="description" content="AI 기반 치안 시스템 해외 사례 분석 및 벤치마킹 - PredPol, HunchLab, ShotSpotter, BriefCam 등 주요 시스템 비교">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./assets/css/style.css">
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'police-navy': '#1e3a8a',
+                        'police-blue': '#3b82f6',
+                        'police-light': '#dbeafe',
+                        'safety-orange': '#f97316',
+                        'safety-red': '#dc2626',
+                        'success-green': '#16a34a'
+                    },
+                    fontFamily: {
+                        'sans': ['Noto Sans KR', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        .benchmark-card {
+            transition: all 0.3s ease;
+        }
+        .benchmark-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+        }
+        
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .comparison-table th {
+            background: linear-gradient(135deg, #1e3a8a, #1e40af);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+            vertical-align: top;
+        }
+        
+        .comparison-table tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+        
+        .highlight-cell {
+            background: linear-gradient(135deg, #fef3c7, #fde68a) !important;
+            font-weight: 600;
+            color: #92400e;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-police-navy shadow-lg z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-white text-xl font-bold">
+                            <i class="fas fa-shield-alt mr-2"></i>
+                            경기북부 치안개선
+                        </h1>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="index.html" class="text-white hover:text-police-light px-3 py-2 rounded-md text-sm font-medium transition-colors">홈</a>
+                        <a href="benchmark.html" class="bg-police-light text-police-navy px-3 py-2 rounded-md text-sm font-medium transition-colors">해외사례</a>
+                        <a href="demo.html" class="text-white hover:text-police-light px-3 py-2 rounded-md text-sm font-medium transition-colors">데모</a>
+                    </div>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-white hover:text-police-light">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-police-navy">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="index.html" class="text-white hover:text-police-light block px-3 py-2 rounded-md text-base font-medium">홈</a>
+                <a href="benchmark.html" class="bg-police-light text-police-navy block px-3 py-2 rounded-md text-base font-medium">해외사례</a>
+                <a href="demo.html" class="text-white hover:text-police-light block px-3 py-2 rounded-md text-base font-medium">데모</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-16 bg-gradient-to-br from-police-navy to-police-blue text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                    🌍 해외 벤치마킹 분석
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 text-police-light">
+                    글로벌 AI 치안 시스템 비교 분석을 통한 차별화 전략
+                </p>
+                <div class="flex flex-wrap justify-center gap-4 text-lg">
+                    <span class="bg-white bg-opacity-20 px-4 py-2 rounded-full">
+                        <i class="fas fa-search mr-2"></i>4개 주요 시스템 분석
+                    </span>
+                    <span class="bg-white bg-opacity-20 px-4 py-2 rounded-full">
+                        <i class="fas fa-chart-line mr-2"></i>기술 동향 파악
+                    </span>
+                    <span class="bg-white bg-opacity-20 px-4 py-2 rounded-full">
+                        <i class="fas fa-target mr-2"></i>차별화 요소 도출
+                    </span>
+                </div>
+            </div>
+        </div>
+        <!-- Wave decoration -->
+        <div class="relative">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="w-full h-12 md:h-20">
+                <path d="M1200,120H0L0,60C120,40,240,20,360,20C480,20,600,40,720,60C840,80,960,100,1080,100C1140,100,1180,90,1200,80V120Z" fill="#f9fafb"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="bg-gray-50">
+        <!-- Overview Section -->
+        <section class="py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        분석 개요
+                    </h2>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        해외 주요 AI 기반 치안 시스템을 체계적으로 분석하여 우리 시스템의 차별화 전략을 도출합니다
+                    </p>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-bullseye text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">분석 목적</h3>
+                        <p class="text-gray-600">
+                            글로벌 선도 시스템 벤치마킹을 통한<br>
+                            차별화 요소 발굴 및 개선 방향 도출
+                        </p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-globe text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">분석 범위</h3>
+                        <p class="text-gray-600">
+                            PredPol, HunchLab, ShotSpotter, BriefCam<br>
+                            4개 주요 상용 플랫폼 심층 분석
+                        </p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-lightbulb text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">기대 성과</h3>
+                        <p class="text-gray-600">
+                            지역 특화 + 시민 참여형<br>
+                            차세대 통합 치안 시스템 설계
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Overseas Systems Analysis -->
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        해외 주요 시스템 분석
+                    </h2>
+                    <p class="text-xl text-gray-600">
+                        글로벌 시장을 선도하는 4개 AI 치안 시스템의 심층 분석
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-16">
+                    <!-- PredPol -->
+                    <div class="benchmark-card bg-white rounded-xl shadow-lg p-8 border border-gray-200">
+                        <div class="flex items-center mb-6">
+                            <div class="w-16 h-16 bg-police-blue rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-map-marked-alt text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-800">PredPol (Geolitica)</h3>
+                                <p class="text-blue-600 font-semibold">예측 치안의 선구자</p>
+                                <a href="https://www.geolitica.com/" target="_blank" class="text-sm text-gray-500 hover:text-blue-600 transition-colors">
+                                    <i class="fas fa-external-link-alt mr-1"></i>공식 웹사이트
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Website Screenshot -->
+                        <div class="mb-6">
+                            <img src="./assets/images/1.png" 
+                                 alt="PredPol (Geolitica) 웹사이트 메인 화면" 
+                                 class="w-full h-48 object-cover rounded-lg border border-gray-200"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="w-full h-48 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg border border-gray-200 flex items-center justify-center text-gray-600" style="display: none;">
+                                <div class="text-center">
+                                    <i class="fas fa-image text-4xl mb-2 opacity-50"></i>
+                                    <p class="text-sm">PredPol 웹사이트 스크린샷</p>
+                                    <p class="text-xs opacity-75">이미지를 추가해주세요</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6">
+                            과거 범죄 데이터를 기반으로 머신러닝 알고리즘을 사용하여 
+                            특정 시간과 장소에서 범죄 발생 가능성이 높은 "핫스팟"을 예측
+                        </p>
+                        
+                        <div class="mb-6">
+                            <h4 class="font-semibold text-gray-800 mb-3">핵심 기술</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">시공간 패턴 분석</span>
+                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">전염형 범죄 모델</span>
+                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">150x150m 예측</span>
+                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">순찰 최적화</span>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                <h5 class="font-semibold text-green-800 mb-2">
+                                    <i class="fas fa-check-circle mr-2"></i>장점
+                                </h5>
+                                <ul class="text-sm text-green-700 space-y-1">
+                                    <li>• 직관적인 지도 시각화</li>
+                                    <li>• 미국 다수 경찰서 도입</li>
+                                    <li>• 순찰 효율성 입증</li>
+                                </ul>
+                            </div>
+                            <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                                <h5 class="font-semibold text-red-800 mb-2">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>한계점
+                                </h5>
+                                <ul class="text-sm text-red-700 space-y-1">
+                                    <li>• 알고리즘 편향성 논란</li>
+                                    <li>• 투명성 부족</li>
+                                    <li>• 차별적 단속 우려</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HunchLab -->
+                    <div class="benchmark-card bg-white rounded-xl shadow-lg p-8 border border-gray-200">
+                        <div class="flex items-center mb-6">
+                            <div class="w-16 h-16 bg-success-green rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-database text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-800">HunchLab (Azavea)</h3>
+                                <p class="text-green-600 font-semibold">통합 위험 분석 플랫폼</p>
+                                <a href="https://www.azavea.com/" target="_blank" class="text-sm text-gray-500 hover:text-green-600 transition-colors">
+                                    <i class="fas fa-external-link-alt mr-1"></i>공식 웹사이트
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Website Screenshot -->
+                        <div class="mb-6">
+                            <img src="./assets/images/2.png" 
+                                 alt="HunchLab (Azavea) 웹사이트 메인 화면" 
+                                 class="w-full h-48 object-cover rounded-lg border border-gray-200"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="w-full h-48 bg-gradient-to-br from-green-100 to-green-200 rounded-lg border border-gray-200 flex items-center justify-center text-gray-600" style="display: none;">
+                                <div class="text-center">
+                                    <i class="fas fa-image text-4xl mb-2 opacity-50"></i>
+                                    <p class="text-sm">HunchLab 웹사이트 스크린샷</p>
+                                    <p class="text-xs opacity-75">이미지를 추가해주세요</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6">
+                            다양한 데이터 소스(범죄, 인구통계, 날씨, 이벤트 등)를 통합하여 
+                            범죄 위험을 예측하고 순찰 전략을 제안하는 플랫폼
+                        </p>
+                        
+                        <div class="mb-6">
+                            <h4 class="font-semibold text-gray-800 mb-3">핵심 기술</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">다중 데이터 통합</span>
+                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">위험 지형 모델링</span>
+                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">공간 분석</span>
+                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">커스터마이징</span>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                <h5 class="font-semibold text-green-800 mb-2">
+                                    <i class="fas fa-check-circle mr-2"></i>장점
+                                </h5>
+                                <ul class="text-sm text-green-700 space-y-1">
+                                    <li>• 포괄적 데이터 활용</li>
+                                    <li>• 위험 요인 분석</li>
+                                    <li>• 사용자 정의 기능</li>
+                                </ul>
+                            </div>
+                            <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                                <h5 class="font-semibold text-red-800 mb-2">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>한계점
+                                </h5>
+                                <ul class="text-sm text-red-700 space-y-1">
+                                    <li>• 복잡한 설정 과정</li>
+                                    <li>• 높은 데이터 요구사항</li>
+                                    <li>• 실시간성 부족</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ShotSpotter -->
+                    <div class="benchmark-card bg-white rounded-xl shadow-lg p-8 border border-gray-200">
+                        <div class="flex items-center mb-6">
+                            <div class="w-16 h-16 bg-safety-orange rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-volume-up text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-800">ShotSpotter</h3>
+                                <p class="text-orange-600 font-semibold">실시간 총성 감지 시스템</p>
+                                <a href="https://www.soundthinking.com/law-enforcement/" target="_blank" class="text-sm text-gray-500 hover:text-orange-600 transition-colors">
+                                    <i class="fas fa-external-link-alt mr-1"></i>공식 웹사이트
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Website Screenshot -->
+                        <div class="mb-6">
+                            <img src="./assets/images/3.jpg" 
+                                 alt="ShotSpotter 웹사이트 메인 화면" 
+                                 class="w-full h-48 object-cover rounded-lg border border-gray-200"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 rounded-lg border border-gray-200 flex items-center justify-center text-gray-600" style="display: none;">
+                                <div class="text-center">
+                                    <i class="fas fa-image text-4xl mb-2 opacity-50"></i>
+                                    <p class="text-sm">ShotSpotter 웹사이트 스크린샷</p>
+                                    <p class="text-xs opacity-75">이미지를 추가해주세요</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6">
+                            도시 전역 음향 센서 네트워크를 통해 총성을 감지하고, 
+                            정확한 위치와 시간을 실시간으로 경찰에 알리는 시스템
+                        </p>
+                        
+                        <div class="mb-6">
+                            <h4 class="font-semibold text-gray-800 mb-3">핵심 기술</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">음향 삼각 측량</span>
+                                <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">AI 소리 분석</span>
+                                <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">실시간 알림</span>
+                                <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">97% 정확도</span>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                <h5 class="font-semibold text-green-800 mb-2">
+                                    <i class="fas fa-check-circle mr-2"></i>장점
+                                </h5>
+                                <ul class="text-sm text-green-700 space-y-1">
+                                    <li>• 90초 이내 즉시 알림</li>
+                                    <li>• 높은 정확도 (97%)</li>
+                                    <li>• 자동 증거 수집</li>
+                                </ul>
+                            </div>
+                            <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                                <h5 class="font-semibold text-red-800 mb-2">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>한계점
+                                </h5>
+                                <ul class="text-sm text-red-700 space-y-1">
+                                    <li>• 총기 특화 제한적 기능</li>
+                                    <li>• 높은 설치 비용</li>
+                                    <li>• 프라이버시 우려</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BriefCam -->
+                    <div class="benchmark-card bg-white rounded-xl shadow-lg p-8 border border-gray-200">
+                        <div class="flex items-center mb-6">
+                            <div class="w-16 h-16 bg-purple-600 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-video text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-800">BriefCam</h3>
+                                <p class="text-purple-600 font-semibold">AI 영상 분석 솔루션</p>
+                                <a href="https://www.briefcam.com/" target="_blank" class="text-sm text-gray-500 hover:text-purple-600 transition-colors">
+                                    <i class="fas fa-external-link-alt mr-1"></i>공식 웹사이트
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Website Screenshot -->
+                        <div class="mb-6">
+                            <img src="./assets/images/4.png" 
+                                 alt="BriefCam 웹사이트 메인 화면" 
+                                 class="w-full h-48 object-cover rounded-lg border border-gray-200"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="w-full h-48 bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg border border-gray-200 flex items-center justify-center text-gray-600" style="display: none;">
+                                <div class="text-center">
+                                    <i class="fas fa-image text-4xl mb-2 opacity-50"></i>
+                                    <p class="text-sm">BriefCam 웹사이트 스크린샷</p>
+                                    <p class="text-xs opacity-75">이미지를 추가해주세요</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6">
+                            방대한 CCTV 영상을 AI로 빠르게 검색하고 분석하여 
+                            특정 사건, 사람, 차량 등을 찾아내는 영상 분석 플랫폼
+                        </p>
+                        
+                        <div class="mb-6">
+                            <h4 class="font-semibold text-gray-800 mb-3">핵심 기술</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">딥러닝 객체 인식</span>
+                                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">Video Synopsis</span>
+                                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">행동 분석</span>
+                                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">차량 번호 인식</span>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                <h5 class="font-semibold text-green-800 mb-2">
+                                    <i class="fas fa-check-circle mr-2"></i>장점
+                                </h5>
+                                <ul class="text-sm text-green-700 space-y-1">
+                                    <li>• 수사 시간 단축</li>
+                                    <li>• 다양한 검색 필터</li>
+                                    <li>• 실시간 이상 감지</li>
+                                </ul>
+                            </div>
+                            <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                                <h5 class="font-semibold text-red-800 mb-2">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>한계점
+                                </h5>
+                                <ul class="text-sm text-red-700 space-y-1">
+                                    <li>• CCTV 의존성</li>
+                                    <li>• 개인정보 이슈</li>
+                                    <li>• 높은 처리 비용</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparison Table -->
+        <section class="py-20 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        시스템 비교 분석
+                    </h2>
+                    <p class="text-xl text-gray-600">
+                        4개 해외 시스템과 우리 시스템의 핵심 기능 비교
+                    </p>
+                </div>
+
+                <div class="comparison-table bg-white rounded-xl shadow-lg overflow-hidden mb-12">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr>
+                                    <th class="text-left">구분</th>
+                                    <th class="text-left">PredPol</th>
+                                    <th class="text-left">HunchLab</th>
+                                    <th class="text-left">ShotSpotter</th>
+                                    <th class="text-left">BriefCam</th>
+                                    <th class="text-left highlight-cell">우리 시스템</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-semibold">주요 기능</td>
+                                    <td>핫스팟 예측</td>
+                                    <td>통합 위험 분석</td>
+                                    <td>총성 실시간 감지</td>
+                                    <td>영상 분석</td>
+                                    <td class="highlight-cell">통합 순찰 시스템</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold">데이터 소스</td>
+                                    <td>범죄 기록</td>
+                                    <td>다중 소스</td>
+                                    <td>음향 센서</td>
+                                    <td>CCTV 영상</td>
+                                    <td class="highlight-cell">다중 소스 + 시민 신고</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold">AI 기술</td>
+                                    <td>패턴 분석</td>
+                                    <td>ML + 공간분석</td>
+                                    <td>음향 AI</td>
+                                    <td>딥러닝</td>
+                                    <td class="highlight-cell">ML + 딥러닝 통합</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold">실시간성</td>
+                                    <td>일배치</td>
+                                    <td>일배치</td>
+                                    <td>실시간</td>
+                                    <td>실시간</td>
+                                    <td class="highlight-cell">준실시간</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold">시민 참여</td>
+                                    <td>✗</td>
+                                    <td>✗</td>
+                                    <td>✗</td>
+                                    <td>✗</td>
+                                    <td class="highlight-cell">✓ 핵심 기능</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold">지역 특화</td>
+                                    <td>일반적</td>
+                                    <td>일반적</td>
+                                    <td>일반적</td>
+                                    <td>일반적</td>
+                                    <td class="highlight-cell">✓ 경기북부 특화</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-8">
+                    <h3 class="text-xl font-bold text-blue-800 mb-4">
+                        <i class="fas fa-lightbulb mr-2"></i>핵심 인사이트
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-3">해외 시스템의 공통점</h4>
+                            <ul class="text-gray-700 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-dot-circle text-blue-600 mt-1 mr-3"></i>
+                                    <span><strong>기술 중심:</strong> AI/ML 기술에 집중</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-dot-circle text-blue-600 mt-1 mr-3"></i>
+                                    <span><strong>일방향 서비스:</strong> 경찰 → 시민 단방향</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-dot-circle text-blue-600 mt-1 mr-3"></i>
+                                    <span><strong>특화 기능:</strong> 단일 영역 전문화</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-3">우리 시스템의 차별점</h4>
+                            <ul class="text-gray-700 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-star text-safety-orange mt-1 mr-3"></i>
+                                    <span><strong>사람 중심:</strong> 시민 참여형 플랫폼</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-star text-safety-orange mt-1 mr-3"></i>
+                                    <span><strong>양방향 소통:</strong> 시민 ↔ 경찰 상호작용</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-star text-safety-orange mt-1 mr-3"></i>
+                                    <span><strong>통합 시스템:</strong> 4개 시스템 장점 결합</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Performance Comparison Chart -->
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                        성능 비교 분석
+                    </h2>
+                    <p class="text-xl text-gray-600">
+                        각 시스템의 주요 성능 지표 레이더 차트 비교
+                    </p>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-12">
+                    <div class="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6 text-center">
+                            해외 시스템 성능 비교
+                        </h3>
+                        <div class="chart-container" style="height: 400px;">
+                            <canvas id="foreignSystemsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6 text-center">
+                            우리 시스템 vs 평균
+                        </h3>
+                        <div class="chart-container" style="height: 400px;">
+                            <canvas id="ourSystemChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-12 text-center">
+                    <div class="inline-block bg-blue-50 border border-blue-200 rounded-lg p-6">
+                        <h4 class="font-bold text-blue-800 mb-3">
+                            <i class="fas fa-chart-line mr-2"></i>성능 분석 결과
+                        </h4>
+                        <p class="text-blue-700 text-lg">
+                            우리 시스템은 <strong>시민 참여도</strong>와 <strong>지역 적합성</strong>에서 압도적 우위를 보이며,<br>
+                            <strong>통합성</strong>과 <strong>투명성</strong> 측면에서도 해외 시스템을 크게 앞서고 있습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conclusion -->
+        <section class="py-20 bg-gradient-to-r from-police-navy to-police-blue text-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-8">
+                        결론 및 기대효과
+                    </h2>
+                    <p class="text-xl mb-12 opacity-90">
+                        글로벌 선도 시스템을 벤치마킹하여 한국형 차세대 치안 시스템 구축
+                    </p>
+                    
+                    <div class="grid md:grid-cols-3 gap-8 mb-12">
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-trophy text-3xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">국내 최초</h3>
+                            <p class="opacity-90">지역 특화 통합 치안 시스템</p>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-users text-3xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">시민 중심</h3>
+                            <p class="opacity-90">양방향 소통 스마트 치안</p>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-chart-line text-3xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">범죄율 25% 감소</h3>
+                            <p class="opacity-90">3년 내 목표 달성</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="index.html" class="bg-white text-police-navy px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-home mr-2"></i>메인으로 돌아가기
+                        </a>
+                        <a href="demo.html" class="border-2 border-white text-white hover:bg-white hover:text-police-navy px-8 py-3 rounded-lg font-semibold transition-colors">
+                            <i class="fas fa-desktop mr-2"></i>시스템 데모 체험
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h3 class="text-2xl font-bold mb-4">경기북부 지역 특화 순찰 시스템</h3>
+                <p class="text-gray-400 mb-6">AI와 빅데이터로 만드는 안전한 경기북부</p>
+                <div class="flex justify-center space-x-6">
+                    <a href="index.html" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-home mr-1"></i>메인
+                    </a>
+                    <a href="index.html#system" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-cogs mr-1"></i>시스템
+                    </a>
+                    <a href="index.html#analysis" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-chart-bar mr-1"></i>분석
+                    </a>
+                    <a href="index.html#effects" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-rocket mr-1"></i>효과
+                    </a>
+                </div>
+                <div class="mt-8 pt-8 border-t border-gray-700 text-sm text-gray-500">
+                    <p>&copy; 2025 경기북부자치경찰위원회 치안개선 정책 아이디어 공모전</p>
+                    <p class="mt-2">
+                        <span class="text-blue-400">작성일:</span> 2025년 5월 22일 | 
+                        <span class="text-blue-400">목적:</span> 정책 아이디어 공모전 벤치마킹 분석
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Chart.js configurations
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        font: {
+                            size: 12
+                        }
+                    }
+                }
+            },
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        stepSize: 20,
+                        font: {
+                            size: 10
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)'
+                    }
+                }
+            }
+        };
+
+        // Foreign Systems Comparison Chart
+        const foreignCtx = document.getElementById('foreignSystemsChart');
+        if (foreignCtx) {
+            new Chart(foreignCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['예측 정확도', '실시간성', '사용 편의성', '비용 효율성', '확장성', '투명성'],
+                    datasets: [
+                        {
+                            label: 'PredPol',
+                            data: [80, 40, 75, 70, 65, 30],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            pointBackgroundColor: '#3b82f6',
+                            pointBorderColor: '#3b82f6',
+                            pointRadius: 4
+                        },
+                        {
+                            label: 'HunchLab',
+                            data: [85, 45, 60, 60, 80, 40],
+                            borderColor: '#16a34a',
+                            backgroundColor: 'rgba(22, 163, 74, 0.1)',
+                            pointBackgroundColor: '#16a34a',
+                            pointBorderColor: '#16a34a',
+                            pointRadius: 4
+                        },
+                        {
+                            label: 'ShotSpotter',
+                            data: [95, 95, 70, 40, 50, 45],
+                            borderColor: '#f97316',
+                            backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                            pointBackgroundColor: '#f97316',
+                            pointBorderColor: '#f97316',
+                            pointRadius: 4
+                        },
+                        {
+                            label: 'BriefCam',
+                            data: [90, 85, 65, 55, 70, 50],
+                            borderColor: '#7c3aed',
+                            backgroundColor: 'rgba(124, 58, 237, 0.1)',
+                            pointBackgroundColor: '#7c3aed',
+                            pointBorderColor: '#7c3aed',
+                            pointRadius: 4
+                        }
+                    ]
+                },
+                options: chartOptions
+            });
+        }
+
+        // Our System vs Average Chart
+        const ourCtx = document.getElementById('ourSystemChart');
+        if (ourCtx) {
+            new Chart(ourCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['예측 정확도', '실시간성', '시민 참여도', '지역 적합성', '통합성', '투명성'],
+                    datasets: [
+                        {
+                            label: '해외 시스템 평균',
+                            data: [87, 66, 20, 40, 45, 41],
+                            borderColor: '#9ca3af',
+                            backgroundColor: 'rgba(156, 163, 175, 0.1)',
+                            pointBackgroundColor: '#9ca3af',
+                            pointBorderColor: '#9ca3af',
+                            pointRadius: 4
+                        },
+                        {
+                            label: '우리 시스템',
+                            data: [85, 75, 95, 90, 85, 80],
+                            borderColor: '#f97316',
+                            backgroundColor: 'rgba(249, 115, 22, 0.2)',
+                            pointBackgroundColor: '#f97316',
+                            pointBorderColor: '#f97316',
+                            pointRadius: 6
+                        }
+                    ]
+                },
+                options: chartOptions
+            });
+        }
+
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

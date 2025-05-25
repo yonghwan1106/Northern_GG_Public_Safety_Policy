@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인터랙티브 데모 | 경기북부 지역 특화 순찰 시스템</title>
+    <meta name="description" content="AI 기반 순찰 시스템의 실시간 데모를 체험해보세요. 가상 순찰 맵, 범죄 예측 대시보드, 시민 신고 시스템을 직접 체험할 수 있습니다.">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Naver Maps API -->
+    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=SszOvSXjnNOyqfiX_DVz"></script>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+        
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'police-navy': '#1e3a8a',
+                        'police-blue': '#3b82f6',
+                        'police-light': '#dbeafe',
+                        'safety-orange': '#f97316',
+                        'safety-red': '#dc2626',
+                        'success-green': '#16a34a'
+                    },
+                    fontFamily: {
+                        'sans': ['Noto Sans KR', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { scroll-behavior: smooth; }
+        .demo-card { transition: all 0.3s ease; }
+        .demo-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        .pulse-animation { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .map-container { height: 400px; border-radius: 12px; }
+        #riskHeatmap.map-container { height: 320px; }
+        .heatmap-container { position: relative; overflow: hidden; }
+        .risk-legend { position: absolute; bottom: 10px; right: 10px; background: rgba(255, 255, 255, 0.9); padding: 10px; border-radius: 8px; font-size: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 1000; }
+        .legend-item { display: flex; align-items: center; margin-bottom: 4px; }
+        .legend-color { width: 16px; height: 12px; margin-right: 6px; border-radius: 2px; }
+        .notification { animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        .naver-popup-content-wrapper { border-radius: 12px !important; box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important; }
+        .naver-popup-content { margin: 0 !important; padding: 12px !important; line-height: 1.4 !important; }
+        .custom-popup .naver-popup-content-wrapper { background: rgba(255, 255, 255, 0.95) !important; backdrop-filter: blur(10px) !important; }
+        .custom-div-icon { background: transparent !important; border: none !important; }
+        .heatmap-updating { animation: heatmapPulse 0.7s ease-in-out; }
+        @keyframes heatmapPulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.01); } 100% { opacity: 1; transform: scale(1); } }
+        .sound-toggle { position: fixed; top: 80px; right: 20px; z-index: 1000; background: rgba(30, 58, 138, 0.9); color: white; padding: 10px; border-radius: 50%; cursor: pointer; transition: all 0.3s ease; backdrop-filter: blur(10px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .sound-toggle:hover { background: rgba(30, 58, 138, 1); transform: scale(1.1); }
+        .sound-toggle.muted { background: rgba(156, 163, 175, 0.9); }
+        .onboarding-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; transition: all 0.3s ease; pointer-events: none; }
+        .onboarding-overlay.active { opacity: 1; pointer-events: auto; }
+        .onboarding-modal { background: white; border-radius: 20px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25); transform: scale(0.9) translateY(20px); transition: all 0.3s ease; }
+        .onboarding-overlay.active .onboarding-modal { transform: scale(1) translateY(0); }
+        .onboarding-header { background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: white; padding: 30px; border-radius: 20px 20px 0 0; text-align: center; }
+        .onboarding-content { padding: 30px; }
+        .onboarding-step { display: none; animation: fadeInSlide 0.5s ease; }
+        .onboarding-step.active { display: block; }
+        @keyframes fadeInSlide { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        .step-indicator { display: flex; justify-content: center; margin-bottom: 30px; }
+        .step-dot { width: 12px; height: 12px; border-radius: 50%; background: #e5e7eb; margin: 0 6px; transition: all 0.3s ease; }
+        .step-dot.active { background: #3b82f6; transform: scale(1.2); }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 20px; margin: 20px 0; }
+        .feature-item { text-align: center; padding: 20px; border: 2px solid #f3f4f6; border-radius: 12px; transition: all 0.3s ease; }
+        .feature-item:hover { border-color: #3b82f6; transform: translateY(-2px); }
+        .feature-icon { width: 60px; height: 60px; margin: 0 auto 15px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .onboarding-buttons { display: flex; justify-content: space-between; align-items: center; padding-top: 20px; border-top: 1px solid #e5e7eb; }
+        .btn-outline { border: 2px solid #6b7280; color: #6b7280; background: transparent; padding: 10px 20px; border-radius: 8px; transition: all 0.3s ease; }
+        .btn-outline:hover { border-color: #3b82f6; color: #3b82f6; }
+        .btn-primary { background: #3b82f6; color: white; padding: 10px 20px; border-radius: 8px; border: none; transition: all 0.3s ease; }
+        .btn-primary:hover { background: #2563eb; }
+        .onboarding-modal::-webkit-scrollbar { width: 8px; }
+        .onboarding-modal::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .onboarding-modal::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
+        .onboarding-modal::-webkit-scrollbar-thumb:hover { background: #555; }
+        .max-h-48 { max-height: 12rem; } 
+        .max-h-64 { max-height: 16rem; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f3f4f6; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+        .scroll-mt-20 { scroll-margin-top: 5rem; /* 80px for fixed navbar compensation */ }
+
+        /* 히트맵 컨트롤 스타일 */
+        .heatmap-controls {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 10px;
+        }
+        .heatmap-controls label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: #374151; /* text-gray-700 */
+        }
+        .heatmap-controls input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+        }
+        .heatmap-controls .control-value {
+            font-size: 12px;
+            color: #4b5563; /* text-gray-600 */
+            text-align: right;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Navigation (기존과 동일) -->
+    <nav class="fixed top-0 w-full bg-police-navy shadow-lg z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <a href="index.html" class="text-white text-xl font-bold hover:text-police-light transition-colors">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            <i class="fas fa-shield-alt mr-2"></i>
+                            경기북부 치안개선
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#patrol-simulator" class="nav-link text-white hover:text-police-light px-3 py-2 rounded-md text-sm font-medium transition-colors">순찰 시뮬레이터</a>
+                        <a href="#prediction-dashboard" class="nav-link text-white hover:text-police-light px-3 py-2 rounded-md text-sm font-medium transition-colors">예측 대시보드</a>
+                        <a href="#report-system" class="nav-link text-white hover:text-police-light px-3 py-2 rounded-md text-sm font-medium transition-colors">신고 시스템</a>
+                        <a href="#real-time-monitor" class="nav-link text-white hover:text-police-light px-3 py-2 rounded-md text-sm font-medium transition-colors">실시간 모니터</a>
+                        <a href="benchmark.html" class="text-white hover:text-police-light px-3 py-2 rounded-md text-sm font-medium transition-colors">해외사례</a>
+                        <a href="index.html" class="bg-safety-orange hover:bg-orange-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                            <i class="fas fa-home mr-1"></i>메인으로
+                        </a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-white hover:text-police-light">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-police-navy">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#patrol-simulator" class="nav-link text-white hover:text-police-light block px-3 py-2 rounded-md text-base font-medium">순찰 시뮬레이터</a>
+                <a href="#prediction-dashboard" class="nav-link text-white hover:text-police-light block px-3 py-2 rounded-md text-base font-medium">예측 대시보드</a>
+                <a href="#report-system" class="nav-link text-white hover:text-police-light block px-3 py-2 rounded-md text-base font-medium">신고 시스템</a>
+                <a href="#real-time-monitor" class="nav-link text-white hover:text-police-light block px-3 py-2 rounded-md text-base font-medium">실시간 모니터</a>
+                <a href="benchmark.html" class="text-white hover:text-police-light block px-3 py-2 rounded-md text-base font-medium">해외사례</a>
+                <a href="index.html" class="text-white hover:text-police-light block px-3 py-2 rounded-md text-base font-medium">메인으로</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sound Toggle Button (기존과 동일) -->
+    <div id="soundToggle" class="sound-toggle" title="사운드 on/off">
+        <i class="fas fa-volume-up" id="soundIcon"></i>
+    </div>
+
+    <!-- Onboarding Modal (기존과 동일) -->
+    <div id="onboardingOverlay" class="onboarding-overlay">
+        <div class="onboarding-modal">
+            <div class="onboarding-header">
+                <h2 class="text-2xl font-bold mb-2">🎯 데모 체험 가이드</h2>
+                <p class="opacity-90">AI 기반 순찰 시스템을 쉽게 체험해보세요</p>
+            </div>
+            <div class="onboarding-content">
+                <div class="step-indicator">
+                    <div class="step-dot active" data-step="0"></div> <div class="step-dot" data-step="1"></div> <div class="step-dot" data-step="2"></div> <div class="step-dot" data-step="3"></div>
+                </div>
+                <div class="onboarding-step active" data-step="0">
+                    <h3 class="text-xl font-bold mb-4 text-center">🎉 환영합니다!</h3>
+                    <p class="text-gray-600 text-center mb-6">경기북부 지역 특화 순찰 시스템의<br><strong>4가지 핵심 기능</strong>을 직접 체험할 수 있습니다</p>
+                    <div class="feature-grid">
+                        <div class="feature-item"><div class="feature-icon bg-blue-100 text-blue-600"><i class="fas fa-map-marked-alt"></i></div><h4 class="font-semibold">순찰 시뮬레이터</h4><p class="text-sm text-gray-600">실시간 순찰 최적화</p></div>
+                        <div class="feature-item"><div class="feature-icon bg-green-100 text-green-600"><i class="fas fa-brain"></i></div><h4 class="font-semibold">AI 예측 시스템</h4><p class="text-sm text-gray-600">범죄 패턴 분석</p></div>
+                        <div class="feature-item"><div class="feature-icon bg-orange-100 text-orange-600"><i class="fas fa-mobile-alt"></i></div><h4 class="font-semibold">스마트 신고</h4><p class="text-sm text-gray-600">실시간 신고 처리</p></div>
+                        <div class="feature-item"><div class="feature-icon bg-purple-100 text-purple-600"><i class="fas fa-tv"></i></div><h4 class="font-semibold">통합 모니터링</h4><p class="text-sm text-gray-600">상황실 관제 시스템</p></div>
+                    </div>
+                </div>
+                <div class="onboarding-step" data-step="1">
+                    <h3 class="text-xl font-bold mb-4 flex items-center"><i class="fas fa-route mr-3 text-blue-600"></i>순찰 시뮬레이터</h3>
+                    <div class="bg-blue-50 p-4 rounded-lg mb-4"><h4 class="font-semibold mb-2">✨ 주요 기능</h4><ul class="text-sm space-y-1 list-disc list-inside text-gray-700"><li><strong>실시간 지도</strong>에서 순찰대 위치 확인</li><li><strong>"순찰 시작"</strong> 버튼으로 시뮬레이션 실행</li><li><strong>통계 카드</strong>에서 성과 지표 모니터링</li><li><strong>활동 로그</strong>에서 실시간 이벤트 확인</li></ul></div>
+                    <div class="bg-yellow-50 p-3 rounded-lg"><p class="text-sm text-yellow-700"><strong>💡 팁:</strong> 지도의 마커를 클릭하면 각 순찰대의 상세 정보를 볼 수 있어요!</p></div>
+                </div>
+                <div class="onboarding-step" data-step="2">
+                    <h3 class="text-xl font-bold mb-4 flex items-center"><i class="fas fa-brain mr-3 text-green-600"></i>AI 예측 대시보드</h3>
+                    <div class="bg-green-50 p-4 rounded-lg mb-4"><h4 class="font-semibold mb-2">🧠 AI 기능</h4><ul class="text-sm space-y-1 list-disc list-inside text-gray-700"><li><strong>위험도 히트맵</strong>으로 고위험 지역 시각화</li><li><strong>예측 정확도</strong> (예: 87.3%) 달성</li><li><strong>"업데이트"</strong> 버튼으로 실시간 데이터 갱신</li><li><strong>예측 요인 분석</strong>으로 원인 파악</li><li><strong>히트맵 강도 조절</strong>로 인터랙션 강화</li></ul></div>
+                    <div class="bg-yellow-50 p-3 rounded-lg"><p class="text-sm text-yellow-700"><strong>💡 팁:</strong> 히트맵의 색상이 진할수록 위험도가 높은 지역이에요! 강도 슬라이더로 직접 조절해보세요.</p></div>
+                </div>
+                <div class="onboarding-step" data-step="3">
+                    <h3 class="text-xl font-bold mb-4 text-center">🚀 이제 시작해보세요!</h3>
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 p-4 rounded-lg"><h4 class="font-semibold mb-2 flex items-center"><i class="fas fa-volume-up mr-2 text-blue-600"></i>사운드 효과</h4><p class="text-sm text-gray-700">우측 상단의 스피커 버튼으로 사운드를 켜고 끌 수 있어요</p></div>
+                        <div class="bg-green-50 p-4 rounded-lg"><h4 class="font-semibold mb-2 flex items-center"><i class="fas fa-mobile-alt mr-2 text-green-600"></i>모바일 지원</h4><p class="text-sm text-gray-700">모든 기능이 모바일에서도 완벽하게 작동합니다</p></div>
+                        <div class="bg-orange-50 p-4 rounded-lg"><h4 class="font-semibold mb-2 flex items-center"><i class="fas fa-question-circle mr-2 text-orange-600"></i>도움말</h4><p class="text-sm text-gray-700">각 섹션의 제목을 클릭하면 해당 기능으로 바로 이동해요</p></div>
+                    </div>
+                    <div class="text-center mt-6"><p class="text-lg font-semibold text-gray-700">준비되셨나요? 🎯</p><p class="text-sm text-gray-500 mt-2">언제든지 다시 보려면 우측 하단의 도움말 버튼을 클릭하세요</p></div>
+                </div>
+                <div class="onboarding-buttons">
+                    <button id="onboardingSkip" class="btn-outline">건너뛰기</button>
+                    <div><button id="onboardingPrev" class="btn-outline mr-3" style="display: none;">이전</button><button id="onboardingNext" class="btn-primary">다음</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Button (기존과 동일) -->
+    <div id="helpButton" class="fixed bottom-6 right-6 z-50 bg-police-blue text-white p-4 rounded-full shadow-lg cursor-pointer hover:bg-police-navy transition-all duration-300" title="도움말 다시보기" style="display: none;">
+        <i class="fas fa-question text-xl"></i>
+    </div>
+
+    <!-- Hero Section (기존과 동일) -->
+    <section class="pt-16 bg-gradient-to-br from-police-navy to-police-blue text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6" data-aos="fade-up" data-aos-duration="800"><i class="fas fa-desktop mr-3"></i>인터랙티브 데모</h1>
+                <p class="text-xl md:text-2xl mb-8 text-police-light" data-aos="fade-up" data-aos-delay="200" data-aos-duration="800">AI 기반 순찰 시스템을 직접 체험해보세요</p>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 max-w-4xl mx-auto" data-aos="fade-up" data-aos-delay="400" data-aos-duration="800">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                        <div data-aos="zoom-in" data-aos-delay="600"><div class="text-2xl font-bold">실시간</div><p class="text-sm opacity-80">순찰 시뮬레이션</p></div>
+                        <div data-aos="zoom-in" data-aos-delay="700"><div class="text-2xl font-bold">AI 예측</div><p class="text-sm opacity-80">범죄 패턴 분석</p></div>
+                        <div data-aos="zoom-in" data-aos-delay="800"><div class="text-2xl font-bold">스마트</div><p class="text-sm opacity-80">신고 시스템</p></div>
+                        <div data-aos="zoom-in" data-aos-delay="900"><div class="text-2xl font-bold">통합</div><p class="text-sm opacity-80">모니터링</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="relative"><svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="w-full h-12 md:h-20"><path d="M1200,120H0L0,60C120,40,240,20,360,20C480,20,600,40,720,60C840,80,960,100,1080,100C1140,100,1180,90,1200,80V120Z" fill="#f9fafb"></path></svg></div>
+    </section>
+
+    <!-- Main Demo Content -->
+    <main class="bg-gray-50 py-12">
+        <!-- Demo Overview (기존과 동일) -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4" data-aos="fade-up">데모 체험 가이드</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="200">아래 4개의 인터랙티브 모듈을 통해 AI 기반 순찰 시스템의 핵심 기능을 직접 체험할 수 있습니다</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="demo-card bg-white rounded-xl p-6 text-center shadow-lg" data-aos="flip-up" data-aos-delay="100">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-map-marked-alt text-blue-600 text-2xl"></i></div>
+                    <h3 class="font-semibold mb-2">순찰 시뮬레이터</h3><p class="text-sm text-gray-600 mb-4">실시간 순찰 경로와 AI 최적화를 체험</p>
+                    <button data-target="patrol-simulator" class="demo-scroll-btn w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">체험하기</button>
+                </div>
+                <div class="demo-card bg-white rounded-xl p-6 text-center shadow-lg" data-aos="flip-up" data-aos-delay="200">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-chart-line text-green-600 text-2xl"></i></div>
+                    <h3 class="font-semibold mb-2">예측 대시보드</h3><p class="text-sm text-gray-600 mb-4">AI 범죄 예측 및 위험도 분석</p>
+                    <button data-target="prediction-dashboard" class="demo-scroll-btn w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">체험하기</button>
+                </div>
+                <div class="demo-card bg-white rounded-xl p-6 text-center shadow-lg" data-aos="flip-up" data-aos-delay="300">
+                    <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-mobile-alt text-orange-600 text-2xl"></i></div>
+                    <h3 class="font-semibold mb-2">신고 시스템</h3><p class="text-sm text-gray-600 mb-4">스마트 시민 신고 플랫폼 체험</p>
+                    <button data-target="report-system" class="demo-scroll-btn w-full bg-orange-600 text-white py-2 rounded-lg hover:bg-orange-700 transition-colors">체험하기</button>
+                </div>
+                <div class="demo-card bg-white rounded-xl p-6 text-center shadow-lg" data-aos="flip-up" data-aos-delay="400">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-tv text-purple-600 text-2xl"></i></div>
+                    <h3 class="font-semibold mb-2">실시간 모니터</h3><p class="text-sm text-gray-600 mb-4">통합 상황실 모니터링 체험</p>
+                    <button data-target="real-time-monitor" class="demo-scroll-btn w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition-colors">체험하기</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Demo 1: Patrol Simulator (기존과 동일) -->
+        <section id="patrol-simulator" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 scroll-mt-20">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8" data-aos="fade-right">
+                    <div><h2 class="text-3xl font-bold text-gray-900 flex items-center"><i class="fas fa-route mr-3 text-blue-600"></i>가상 순찰 맵 시뮬레이터</h2><p class="text-gray-600 mt-2">경기북부 지역의 실시간 순찰 최적화 과정을 시각화합니다</p></div>
+                    <div class="flex space-x-3 mt-4 sm:mt-0" data-aos="fade-left" data-aos-delay="200">
+                        <button id="startPatrol" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors whitespace-nowrap"><i class="fas fa-play mr-2"></i>순찰 시작</button>
+                        <button id="resetPatrol" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition-colors whitespace-nowrap"><i class="fas fa-redo mr-2"></i>초기화</button>
+                    </div>
+                </div>
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2">
+                        <div class="bg-gray-100 rounded-xl p-4" data-aos="zoom-in">
+                            <div id="patrolMap" class="w-full h-96 rounded-lg bg-gray-200 flex items-center justify-center map-container"><div class="text-center text-gray-500"><i class="fas fa-map text-4xl mb-3"></i><p>지도가 로딩중입니다...</p></div></div>
+                        </div>
+                        <div class="mt-6 grid md:grid-cols-3 gap-4">
+                            <div class="bg-blue-50 rounded-lg p-4 text-center" data-aos="fade-up" data-aos-delay="100"><div class="text-2xl font-bold text-blue-600" id="activePatrols">8</div><p class="text-sm text-gray-600">활성 순찰대</p></div>
+                            <div class="bg-green-50 rounded-lg p-4 text-center" data-aos="fade-up" data-aos-delay="200"><div class="text-2xl font-bold text-green-600" id="coverageRate">78%</div><p class="text-sm text-gray-600">지역 커버리지</p></div>
+                            <div class="bg-orange-50 rounded-lg p-4 text-center" data-aos="fade-up" data-aos-delay="300"><div class="text-2xl font-bold text-orange-600" id="avgResponsePatrol">12.3</div><p class="text-sm text-gray-600">평균 대응시간(분)</p></div>
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="bg-gray-50 rounded-xl p-6"><h3 class="font-semibold mb-4 flex items-center"><i class="fas fa-info-circle mr-2 text-blue-600"></i>현재 상황</h3><div class="space-y-3"><div class="flex justify-between"><span class="text-sm">시뮬레이션 시간</span><span class="text-sm font-semibold" id="simTime">00:00:00</span></div><div class="flex justify-between"><span class="text-sm">처리된 신고</span><span class="text-sm font-semibold" id="processedReports">0</span></div><div class="flex justify-between"><span class="text-sm">예방된 사건</span><span class="text-sm font-semibold text-green-600" id="preventedIncidents">0</span></div></div></div>
+                        <div class="bg-gray-50 rounded-xl p-6"><h3 class="font-semibold mb-4 flex items-center"><i class="fas fa-users mr-2 text-green-600"></i>순찰대 현황</h3><div id="patrolUnits" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar"><p class="text-sm text-gray-500">시뮬레이션 시작 시 표시됩니다.</p></div></div>
+                        <div class="bg-gray-50 rounded-xl p-6"><h3 class="font-semibold mb-4 flex items-center"><i class="fas fa-clock mr-2 text-orange-600"></i>최근 활동</h3><div id="recentActivity" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar"><p class="text-sm text-gray-500">시뮬레이션 활동이 기록됩니다.</p></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Demo 2: Prediction Dashboard (히트맵 컨트롤 추가) -->
+        <section id="prediction-dashboard" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 scroll-mt-20">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-900 flex items-center">
+                            <i class="fas fa-brain mr-3 text-green-600"></i>
+                            AI 범죄 예측 대시보드
+                        </h2>
+                        <p class="text-gray-600 mt-2">머신러닝 기반 범죄 패턴 분석 및 예측 시스템</p>
+                    </div>
+                    <div class="flex items-center space-x-4 mt-4 sm:mt-0">
+                        <select id="predictionTimeRange" class="bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent transition">
+                            <option value="1h">1시간 예측</option>
+                            <option value="6h">6시간 예측</option>
+                            <option value="24h" selected>24시간 예측</option>
+                            <option value="7d">7일 예측</option>
+                        </select>
+                        <button id="updatePrediction" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors whitespace-nowrap">
+                            <i class="fas fa-sync-alt mr-2"></i>수동 업데이트
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2">
+                        <div class="bg-gray-100 rounded-xl p-4 mb-6 heatmap-container">
+                            <h3 class="font-semibold mb-2 flex items-center">
+                                <i class="fas fa-fire mr-2 text-red-600"></i>
+                                실시간 위험도 히트맵 <span id="heatmapAutoUpdateStatus" class="ml-2 text-xs text-gray-500">(자동 업데이트 활성)</span>
+                            </h3>
+                            <div id="riskHeatmap" class="w-full h-80 bg-gray-200 rounded-lg flex items-center justify-center map-container">
+                                <div class="text-center text-gray-500"><i class="fas fa-map-marked-alt text-4xl mb-3"></i><p>위험도 히트맵 로딩중...</p></div>
+                            </div>
+                            <div class="risk-legend">
+                                <div class="font-semibold mb-2">위험도</div>
+                                <div class="legend-item"><div class="legend-color" style="background-color: #7c2d12;"></div><span>매우높음</span></div>
+                                <div class="legend-item"><div class="legend-color" style="background-color: #dc2626;"></div><span>높음</span></div>
+                                <div class="legend-item"><div class="legend-color" style="background-color: #f97316;"></div><span>보통</span></div>
+                                <div class="legend-item"><div class="legend-color" style="background-color: #eab308;"></div><span>주의</span></div>
+                                <div class="legend-item"><div class="legend-color" style="background-color: #16a34a;"></div><span>낮음</span></div>
+                            </div>
+                        </div>
+                        
+                        <!-- 히트맵 컨트롤 추가 -->
+                        <div class="heatmap-controls" data-aos="fade-up">
+                            <div>
+                                <label for="heatmapIntensity">히트맵 강도: <span id="heatmapIntensityValue" class="control-value">0.8</span></label>
+                                <input type="range" id="heatmapIntensity" min="0.1" max="1" step="0.05" value="0.8" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-police-blue">
+                            </div>
+                            <div class="mt-3">
+                                <label for="heatmapRadius">표시 반경: <span id="heatmapRadiusValue" class="control-value">45</span></label>
+                                <input type="range" id="heatmapRadius" min="25" max="70" step="1" value="45" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-police-blue">
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 mt-6">
+                            <h3 class="font-semibold mb-4 text-center text-gray-700">AI 모델 성능 지표</h3>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="text-center"><div class="text-3xl font-bold text-green-600">87.3%</div><p class="text-sm text-gray-600">예측 정확도</p></div>
+                                <div class="text-center"><div class="text-3xl font-bold text-blue-600">92.1%</div><p class="text-sm text-gray-600">재현율</p></div>
+                                <div class="text-center"><div class="text-3xl font-bold text-purple-600">0.89</div><p class="text-sm text-gray-600">F1 Score</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="bg-red-50 rounded-xl p-6 border border-red-200">
+                            <h3 class="font-semibold mb-4 text-red-800 flex items-center"><i class="fas fa-exclamation-triangle mr-2"></i>고위험 지역 (Top 3)</h3>
+                            <div id="highRiskAreas" class="space-y-3 max-h-48 overflow-y-auto custom-scrollbar">
+                                <!-- 동적으로 생성됨 -->
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 rounded-xl p-6 border border-blue-200">
+                            <h3 class="font-semibold mb-4 text-blue-800 flex items-center"><i class="fas fa-cogs mr-2"></i>예측 요인 분석 (예시)</h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center"><span class="text-sm">시간대 패턴</span><div class="flex items-center"><div class="w-20 bg-gray-200 rounded-full h-2 mr-2"><div class="bg-blue-500 h-2 rounded-full" style="width: 85%"></div></div><span class="text-xs">85%</span></div></div>
+                                <div class="flex justify-between items-center"><span class="text-sm">날씨 조건</span><div class="flex items-center"><div class="w-20 bg-gray-200 rounded-full h-2 mr-2"><div class="bg-blue-500 h-2 rounded-full" style="width: 72%"></div></div><span class="text-xs">72%</span></div></div>
+                                <div class="flex justify-between items-center"><span class="text-sm">유동인구</span><div class="flex items-center"><div class="w-20 bg-gray-200 rounded-full h-2 mr-2"><div class="bg-blue-500 h-2 rounded-full" style="width: 68%"></div></div><span class="text-xs">68%</span></div></div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-6">
+                            <h3 class="font-semibold mb-4 flex items-center"><i class="fas fa-chart-line mr-2 text-green-600"></i>24시간 예측 트렌드</h3>
+                            <div class="h-48"><canvas id="predictionChart"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Demo 3: Citizen Report System (기존과 동일) -->
+        <section id="report-system" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 scroll-mt-20">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <div class="text-center mb-8"><h2 class="text-3xl font-bold text-gray-900 flex items-center justify-center"><i class="fas fa-mobile-alt mr-3 text-orange-600"></i>스마트 시민 신고 시스템</h2><p class="text-gray-600 mt-2">실시간 위치 기반 신고 및 자동 순찰대 배치 시스템</p></div>
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div class="flex justify-center" data-aos="fade-right">
+                        <div class="bg-gray-900 rounded-3xl p-4 shadow-2xl max-w-sm w-full">
+                            <div class="bg-white rounded-2xl overflow-hidden">
+                                <div class="bg-orange-600 text-white p-4"><div class="flex items-center justify-between"><h3 class="font-bold">경기북부 안전신고</h3><div class="flex space-x-1"><div class="w-3 h-3 bg-white rounded-full opacity-60"></div><div class="w-3 h-3 bg-white rounded-full"></div><div class="w-3 h-3 bg-white rounded-full opacity-60"></div></div></div></div>
+                                <div class="p-4 space-y-4">
+                                    <div class="bg-blue-50 rounded-lg p-3"><div class="flex items-center text-sm"><i class="fas fa-map-marker-alt text-blue-600 mr-2"></i><span class="text-blue-800">현재 위치: 의정부시 민락동 (자동감지)</span></div></div>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button class="report-category bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg p-3 text-center transition-colors"><i class="fas fa-exclamation-triangle text-red-600 text-xl mb-1"></i><div class="text-xs font-medium text-red-800">긴급신고</div></button>
+                                        <button class="report-category bg-orange-50 hover:bg-orange-100 border border-orange-200 rounded-lg p-3 text-center transition-colors"><i class="fas fa-car-crash text-orange-600 text-xl mb-1"></i><div class="text-xs font-medium text-orange-800">교통사고</div></button>
+                                        <button class="report-category bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg p-3 text-center transition-colors"><i class="fas fa-user-injured text-yellow-600 text-xl mb-1"></i><div class="text-xs font-medium text-yellow-800">사회적약자</div></button>
+                                        <button class="report-category bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg p-3 text-center transition-colors"><i class="fas fa-home text-green-600 text-xl mb-1"></i><div class="text-xs font-medium text-green-800">생활안전</div></button>
+                                    </div>
+                                    <div class="space-y-3">
+                                        <textarea id="reportDescription" placeholder="상황을 간단히 설명해주세요..." class="w-full h-20 text-sm border border-gray-300 rounded-lg p-3 resize-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"></textarea>
+                                        <div class="flex space-x-2"><button class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-3 rounded-lg text-sm transition-colors"><i class="fas fa-camera mr-1"></i>사진</button><button class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-3 rounded-lg text-sm transition-colors"><i class="fas fa-microphone mr-1"></i>음성</button></div>
+                                        <button id="submitReport" class="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-lg font-semibold transition-colors"><i class="fas fa-paper-plane mr-2"></i>신고하기</button>
+                                    </div>
+                                    <div id="reportStatus" class="text-center text-sm text-gray-500 h-5">신고 준비 완료</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-6" data-aos="fade-left">
+                        <div class="bg-gray-50 rounded-xl p-6">
+                            <h3 class="font-semibold mb-4 flex items-center"><i class="fas fa-cogs mr-2 text-blue-600"></i>신고 처리 과정</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center"><div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">1</div><div><div class="font-medium text-gray-800">자동 위치 감지</div><div class="text-sm text-gray-600">GPS 기반 정확한 위치 파악</div></div></div>
+                                <div class="flex items-center"><div class="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">2</div><div><div class="font-medium text-gray-800">AI 우선순위 분류</div><div class="text-sm text-gray-600">긴급도에 따른 자동 분류</div></div></div>
+                                <div class="flex items-center"><div class="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">3</div><div><div class="font-medium text-gray-800">최적 순찰대 배치</div><div class="text-sm text-gray-600">가장 가까운 순찰대 자동 호출</div></div></div>
+                                <div class="flex items-center"><div class="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">4</div><div><div class="font-medium text-gray-800">실시간 상황 전파</div><div class="text-sm text-gray-600">관련 기관 동시 정보 공유</div></div></div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-6"><h3 class="font-semibold mb-4 flex items-center"><i class="fas fa-list mr-2 text-green-600"></i>실시간 신고 현황</h3><div id="liveReports" class="space-y-3 max-h-64 overflow-y-auto custom-scrollbar"><p class="text-sm text-gray-500">신고 접수 시 여기에 표시됩니다.</p></div></div>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="bg-blue-50 rounded-lg p-4 text-center"><div class="text-2xl font-bold text-blue-600" id="todayReports">24</div><p class="text-sm text-gray-600">오늘 신고 건수</p></div>
+                            <div class="bg-green-50 rounded-lg p-4 text-center"><div class="text-2xl font-bold text-green-600" id="avgResponseTimeReport">8.2</div><p class="text-sm text-gray-600">평균 대응시간(분)</p></div>
+                            <div class="bg-orange-50 rounded-lg p-4 text-center"><div class="text-2xl font-bold text-orange-600" id="satisfactionRate">94%</div><p class="text-sm text-gray-600">신고자 만족도</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Demo 4: Real-time Monitoring (기존과 동일) -->
+        <section id="real-time-monitor" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 scroll-mt-20">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8">
+                    <div><h2 class="text-3xl font-bold text-gray-900 flex items-center"><i class="fas fa-tv mr-3 text-purple-600"></i>통합 상황실 모니터링</h2><p class="text-gray-600 mt-2">실시간 데이터 통합 분석 및 관제 시스템</p></div>
+                    <div class="text-sm text-gray-500 mt-4 sm:mt-0">마지막 업데이트: <span id="lastUpdate">방금 전</span></div>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl p-6 text-center shadow-lg" data-aos="zoom-in-up"><div class="text-3xl font-bold mb-2" id="totalPatrolsMonitor">12</div><p class="text-sm opacity-90">총 순찰대</p><div class="mt-2 flex items-center justify-center"><div class="w-2 h-2 bg-green-400 rounded-full mr-2 pulse-animation"></div><span class="text-xs">모두 활성</span></div></div>
+                    <div class="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-xl p-6 text-center shadow-lg" data-aos="zoom-in-up" data-aos-delay="100"><div class="text-3xl font-bold mb-2" id="activeIncidentsMonitor">3</div><p class="text-sm opacity-90">진행중 사건</p><div class="mt-2 flex items-center justify-center"><div class="w-2 h-2 bg-orange-400 rounded-full mr-2 pulse-animation"></div><span class="text-xs">대응중</span></div></div>
+                    <div class="bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-xl p-6 text-center shadow-lg" data-aos="zoom-in-up" data-aos-delay="200"><div class="text-3xl font-bold mb-2" id="riskLevelMonitor">중간</div><p class="text-sm opacity-90">현재 위험도</p><div class="mt-2"><div class="w-full bg-white/20 rounded-full h-2"><div class="bg-white h-2 rounded-full" style="width: 60%"></div></div></div></div>
+                    <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-xl p-6 text-center shadow-lg" data-aos="zoom-in-up" data-aos-delay="300"><div class="text-3xl font-bold mb-2" id="systemHealth">99.8%</div><p class="text-sm opacity-90">시스템 가동률</p><div class="mt-2 flex items-center justify-center"><div class="w-2 h-2 bg-green-400 rounded-full mr-2"></div><span class="text-xs">정상</span></div></div>
+                </div>
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-gray-900 text-white rounded-xl p-6" data-aos="fade-up"><h3 class="font-semibold mb-4 flex items-center"><i class="fas fa-bell mr-2 text-yellow-400"></i>실시간 알림</h3><div id="systemAlerts" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar"><p class="text-sm text-gray-400">시스템 알림이 여기에 표시됩니다.</p></div></div>
+                        <div class="bg-gray-50 rounded-xl p-6" data-aos="fade-up" data-aos-delay="100"><h3 class="font-semibold mb-4 flex items-center"><i class="fas fa-chart-area mr-2 text-blue-600"></i>실시간 성능 지표</h3><div class="h-64"><canvas id="performanceChart"></canvas></div></div>
+                    </div>
+                    <div class="space-y-6" data-aos="fade-left" data-aos-delay="100">
+                        <div class="bg-gray-50 rounded-xl p-6"><h3 class="font-semibold mb-4 flex items-center"><i class="fas fa-users mr-2 text-green-600"></i>활성 순찰대</h3><div id="activePatrolsList" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar"><p class="text-sm text-gray-500">활성 순찰대 정보가 여기에 표시됩니다.</p></div></div>
+                        <div class="bg-gray-50 rounded-xl p-6"><h3 class="font-semibold mb-4 flex items-center"><i class="fas fa-bolt mr-2 text-orange-600"></i>빠른 작업</h3><div class="space-y-3"><button class="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition-colors"><i class="fas fa-exclamation-triangle mr-2"></i>긴급 출동 요청</button><button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors"><i class="fas fa-route mr-2"></i>순찰 경로 재계산</button><button class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-colors"><i class="fas fa-sync-alt mr-2"></i>AI 모델 업데이트</button><button class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition-colors"><i class="fas fa-file-alt mr-2"></i>일일 보고서 생성</button></div></div>
+                        <div class="bg-gray-50 rounded-xl p-6"><h3 class="font-semibold mb-4 flex items-center"><i class="fas fa-database mr-2 text-purple-600"></i>데이터 소스 상태</h3><div class="space-y-3"><div class="flex justify-between items-center"><span class="text-sm">112 신고 시스템</span><div class="flex items-center"><div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div><span class="text-xs text-green-600">정상</span></div></div><div class="flex justify-between items-center"><span class="text-sm">CCTV 영상 분석</span><div class="flex items-center"><div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div><span class="text-xs text-green-600">정상</span></div></div><div class="flex justify-between items-center"><span class="text-sm">기상청 API</span><div class="flex items-center"><div class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div><span class="text-xs text-yellow-600">지연</span></div></div><div class="flex justify-between items-center"><span class="text-sm">순찰대 GPS</span><div class="flex items-center"><div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div><span class="text-xs text-green-600">정상</span></div></div></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Demo Summary (기존과 동일) -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+            <div class="bg-gradient-to-r from-police-navy to-police-blue text-white rounded-xl p-8 text-center" data-aos="fade-in">
+                <h2 class="text-3xl font-bold mb-4"><i class="fas fa-trophy mr-2"></i>데모 체험 완료</h2>
+                <p class="text-lg mb-6 opacity-90">AI 기반 순찰 시스템의 핵심 기능들을 체험해보셨습니다</p>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4"><i class="fas fa-check-circle text-green-400 text-2xl mb-2"></i><div class="font-semibold">순찰 최적화</div><div class="text-sm opacity-80">AI 기반 경로 최적화</div></div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4"><i class="fas fa-check-circle text-green-400 text-2xl mb-2"></i><div class="font-semibold">범죄 예측</div><div class="text-sm opacity-80">머신러닝 패턴 분석</div></div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4"><i class="fas fa-check-circle text-green-400 text-2xl mb-2"></i><div class="font-semibold">스마트 신고</div><div class="text-sm opacity-80">실시간 위치 기반 신고</div></div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4"><i class="fas fa-check-circle text-green-400 text-2xl mb-2"></i><div class="font-semibold">통합 모니터링</div><div class="text-sm opacity-80">실시간 상황실 관제</div></div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="index.html" class="bg-white text-police-navy px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"><i class="fas fa-arrow-left mr-2"></i>메인 페이지로 돌아가기</a>
+                    <a href="index.html#effects" class="border-2 border-white text-white hover:bg-white hover:text-police-navy px-8 py-3 rounded-lg font-semibold transition-colors"><i class="fas fa-chart-line mr-2"></i>기대효과 보기</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer (기존과 동일) -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h3 class="text-2xl font-bold mb-4">경기북부 지역 특화 순찰 시스템</h3>
+                <p class="text-gray-400 mb-6">AI와 빅데이터로 만드는 안전한 경기북부</p>
+                <div class="flex justify-center space-x-6">
+                    <a href="index.html" class="text-gray-400 hover:text-white transition-colors"><i class="fas fa-home mr-1"></i>메인</a>
+                    <a href="index.html#system" class="text-gray-400 hover:text-white transition-colors"><i class="fas fa-cogs mr-1"></i>시스템</a>
+                    <a href="index.html#analysis" class="text-gray-400 hover:text-white transition-colors"><i class="fas fa-chart-bar mr-1"></i>분석</a>
+                    <a href="index.html#effects" class="text-gray-400 hover:text-white transition-colors"><i class="fas fa-rocket mr-1"></i>효과</a>
+                </div>
+                <div class="mt-8 pt-8 border-t border-gray-700 text-sm text-gray-500"><p>© 2025 경기북부자치경찰위원회 치안개선 정책 아이디어 공모전</p></div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript -->
+    <script src="./assets/js/demo_naver_fixed.js"></script>
+    
+    <!-- AOS Animation JavaScript -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인터랙티브 데모 | 경기북부 지역 특화 순찰 시스템</title>
+    <meta name="description" content="AI 기반 순찰 시스템의 실시간 데모를 체험해보세요. 가상 순찰 맵, 범죄 예측 대시보드, 시민 신고 시스템을 직접 체험할 수 있습니다.">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Leaflet CSS & JS (데모용) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+        
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'police-navy': '#1e3a8a',
+                        'police-blue': '#3b82f6',
+                        'police-light': '#dbeafe',
+                        'safety-orange': '#f97316',
+                        'safety-red': '#dc2626',
+                        'success-green': '#16a34a'
+                    },
+                    fontFamily: {
+                        'sans': ['Noto Sans KR', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { scroll-behavior: smooth; }
+        .demo-card { transition: all 0.3s ease; }
+        .demo-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        .pulse-animation { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .leaflet-container { height: 400px; border-radius: 12px; }
+        #riskHeatmap.leaflet-container { height: 320px; }
+        .heatmap-container { position: relative; overflow: hidden; }
+        .risk-legend { position: absolute; bottom: 10px; right: 10px; background: rgba(255, 255, 255, 0.9); padding: 10px; border-radius: 8px; font-size: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 1000; }
+        .legend-item { display: flex; align-items: center; margin-bottom: 4px; }
+        .legend-color { width: 16px; height: 12px; margin-right: 6px; border-radius: 2px; }
+        .notification { animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        .leaflet-popup-content-wrapper { border-radius: 12px !important; box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important; }
+        .leaflet-popup-content { margin: 0 !important; padding: 12px !important; line-height: 1.4 !important; }
+        .custom-popup .leaflet-popup-content-wrapper { background: rgba(255, 255, 255, 0.95) !important; backdrop-filter: blur(10px) !important; }
+        .custom-div-icon { background: transparent !important; border: none !important; }
+        .heatmap-updating { animation: heatmapPulse 0.7s ease-in-out; }
+        @keyframes heatmapPulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.01); } 100% { opacity: 1; transform: scale(1); } }
+        .sound-toggle { position: fixed; top: 80px; right: 20px; z-index: 1000; background: rgba(30, 58, 138, 0.9); color: white; padding: 10px; border-radius: 50%; cursor: pointer; transition: all 0.3s ease; backdrop-filter: blur(10px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .sound-toggle:hover { background: rgba(30, 58, 138, 1); transform: scale(1.1); }
+        .sound-toggle.muted { background: rgba(156, 163, 175, 0.9); }
+        
+        /* 데모 알림 스타일 */
+        .demo-notice { 
+            background: linear-gradient(135deg, #fef3c7, #fde68a); 
+            border: 2px solid #f59e0b; 
+            color: #92400e; 
+            padding: 12px 16px; 
+            border-radius: 8px; 
+            margin-bottom: 16px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .demo-notice strong { color: #d97706; }
+        
+        /* 히트맵 컨트롤 스타일 */
+        .heatmap-controls {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 10px;
+        }
+        .heatmap-controls label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: #374151;
+        }
+        .heatmap-controls input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+        }
+        .heatmap-controls .control-value {
+            font-size: 12px;
+            color: #4b5563;
+            text-align: right;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-police-navy shadow-lg z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <a href="index.html" class="text-white text-xl font-bold hover:text-police-light transition-colors">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            <i class="fas fa-shield-alt mr-2"></i>
+                            경기북부 치안개선 (데모버전)
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#patrol-simulator" class="nav-link text-white hover:text-police-light px-3 py-2 rounded-md text-sm font-medium transition-colors">순찰 시뮬레이터</a>
+                        <a href="#prediction-dashboard" class="nav-link text-white hover:text-police-light px-3 py-2 rounded-md text-sm font-medium transition-colors">예측 대시보드</a>
+                        <a href="demo.html" class="bg-safety-orange hover:bg-orange-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                            <i class="fas fa-map mr-1"></i>네이버맵 버전
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-16 bg-gradient-to-br from-police-navy to-police-blue text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">
+                    <i class="fas fa-desktop mr-3"></i>인터랙티브 데모 (테스트 버전)
+                </h1>
+                <div class="demo-notice max-w-4xl mx-auto mb-8">
+                    <strong><i class="fas fa-info-circle mr-2"></i>알림:</strong>
+                    이것은 데모 버전입니다. 실제 네이버맵 API 키 설정을 위해서는 
+                    <a href="https://www.ncloud.com/" target="_blank" class="underline font-semibold">네이버 클라우드 플랫폼</a>에서 
+                    Maps API를 신청하고 Client ID를 발급받으세요.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Demo Content -->
+    <main class="bg-gray-50 py-12">
+        <!-- Demo 1: Patrol Simulator -->
+        <section id="patrol-simulator" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-900 flex items-center">
+                            <i class="fas fa-route mr-3 text-blue-600"></i>가상 순찰 맵 시뮬레이터
+                        </h2>
+                        <p class="text-gray-600 mt-2">경기북부 지역의 실시간 순찰 최적화 과정을 시각화합니다</p>
+                    </div>
+                    <div class="flex space-x-3 mt-4 sm:mt-0">
+                        <button id="startPatrol" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors whitespace-nowrap">
+                            <i class="fas fa-play mr-2"></i>순찰 시작
+                        </button>
+                        <button id="resetPatrol" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition-colors whitespace-nowrap">
+                            <i class="fas fa-redo mr-2"></i>초기화
+                        </button>
+                    </div>
+                </div>
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2">
+                        <div class="bg-gray-100 rounded-xl p-4">
+                            <div id="patrolMap" class="w-full h-96 rounded-lg"></div>
+                        </div>
+                        <div class="mt-6 grid md:grid-cols-3 gap-4">
+                            <div class="bg-blue-50 rounded-lg p-4 text-center">
+                                <div class="text-2xl font-bold text-blue-600" id="activePatrols">8</div>
+                                <p class="text-sm text-gray-600">활성 순찰대</p>
+                            </div>
+                            <div class="bg-green-50 rounded-lg p-4 text-center">
+                                <div class="text-2xl font-bold text-green-600" id="coverageRate">78%</div>
+                                <p class="text-sm text-gray-600">지역 커버리지</p>
+                            </div>
+                            <div class="bg-orange-50 rounded-lg p-4 text-center">
+                                <div class="text-2xl font-bold text-orange-600" id="avgResponsePatrol">12.3</div>
+                                <p class="text-sm text-gray-600">평균 대응시간(분)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="bg-gray-50 rounded-xl p-6">
+                            <h3 class="font-semibold mb-4 flex items-center">
+                                <i class="fas fa-info-circle mr-2 text-blue-600"></i>현재 상황
+                            </h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between">
+                                    <span class="text-sm">시뮬레이션 시간</span>
+                                    <span class="text-sm font-semibold" id="simTime">00:00:00</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">처리된 신고</span>
+                                    <span class="text-sm font-semibold" id="processedReports">0</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm">예방된 사건</span>
+                                    <span class="text-sm font-semibold text-green-600" id="preventedIncidents">0</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-6">
+                            <h3 class="font-semibold mb-4 flex items-center">
+                                <i class="fas fa-users mr-2 text-green-600"></i>순찰대 현황
+                            </h3>
+                            <div id="patrolUnits" class="space-y-2 max-h-48 overflow-y-auto">
+                                <p class="text-sm text-gray-500">시뮬레이션 시작 시 표시됩니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Demo 2: Prediction Dashboard -->
+        <section id="prediction-dashboard" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-900 flex items-center">
+                            <i class="fas fa-brain mr-3 text-green-600"></i>AI 범죄 예측 대시보드
+                        </h2>
+                        <p class="text-gray-600 mt-2">머신러닝 기반 범죄 패턴 분석 및 예측 시스템</p>
+                    </div>
+                    <div class="flex items-center space-x-4 mt-4 sm:mt-0">
+                        <select id="predictionTimeRange" class="bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent transition">
+                            <option value="1h">1시간 예측</option>
+                            <option value="6h">6시간 예측</option>
+                            <option value="24h" selected>24시간 예측</option>
+                            <option value="7d">7일 예측</option>
+                        </select>
+                        <button id="updatePrediction" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors whitespace-nowrap">
+                            <i class="fas fa-sync-alt mr-2"></i>수동 업데이트
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2">
+                        <div class="bg-gray-100 rounded-xl p-4 mb-6 heatmap-container">
+                            <h3 class="font-semibold mb-2 flex items-center">
+                                <i class="fas fa-fire mr-2 text-red-600"></i>실시간 위험도 히트맵 
+                                <span id="heatmapAutoUpdateStatus" class="ml-2 text-xs text-gray-500">(자동 업데이트 활성)</span>
+                            </h3>
+                            <div id="riskHeatmap" class="w-full h-80 bg-gray-200 rounded-lg"></div>
+                        </div>
+                        
+                        <!-- 히트맵 컨트롤 -->
+                        <div class="heatmap-controls">
+                            <div>
+                                <label for="heatmapIntensity">히트맵 강도: <span id="heatmapIntensityValue" class="control-value">0.8</span></label>
+                                <input type="range" id="heatmapIntensity" min="0.1" max="1" step="0.05" value="0.8" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-police-blue">
+                            </div>
+                            <div class="mt-3">
+                                <label for="heatmapRadius">표시 반경: <span id="heatmapRadiusValue" class="control-value">45</span></label>
+                                <input type="range" id="heatmapRadius" min="25" max="70" step="1" value="45" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-police-blue">
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 mt-6">
+                            <h3 class="font-semibold mb-4 text-center text-gray-700">AI 모델 성능 지표</h3>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-green-600">87.3%</div>
+                                    <p class="text-sm text-gray-600">예측 정확도</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-blue-600">92.1%</div>
+                                    <p class="text-sm text-gray-600">재현율</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-purple-600">0.89</div>
+                                    <p class="text-sm text-gray-600">F1 Score</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="bg-red-50 rounded-xl p-6 border border-red-200">
+                            <h3 class="font-semibold mb-4 text-red-800 flex items-center">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>고위험 지역 (Top 3)
+                            </h3>
+                            <div id="highRiskAreas" class="space-y-3 max-h-48 overflow-y-auto">
+                                <!-- 동적으로 생성됨 -->
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 rounded-xl p-6 border border-blue-200">
+                            <h3 class="font-semibold mb-4 text-blue-800 flex items-center">
+                                <i class="fas fa-cogs mr-2"></i>예측 요인 분석 (예시)
+                            </h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm">시간대 패턴</span>
+                                    <div class="flex items-center">
+                                        <div class="w-20 bg-gray-200 rounded-full h-2 mr-2">
+                                            <div class="bg-blue-500 h-2 rounded-full" style="width: 85%"></div>
+                                        </div>
+                                        <span class="text-xs">85%</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm">날씨 조건</span>
+                                    <div class="flex items-center">
+                                        <div class="w-20 bg-gray-200 rounded-full h-2 mr-2">
+                                            <div class="bg-blue-500 h-2 rounded-full" style="width: 72%"></div>
+                                        </div>
+                                        <span class="text-xs">72%</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm">유동인구</span>
+                                    <div class="flex items-center">
+                                        <div class="w-20 bg-gray-200 rounded-full h-2 mr-2">
+                                            <div class="bg-blue-500 h-2 rounded-full" style="width: 68%"></div>
+                                        </div>
+                                        <span class="text-xs">68%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-6">
+                            <h3 class="font-semibold mb-4 flex items-center">
+                                <i class="fas fa-chart-line mr-2 text-green-600"></i>24시간 예측 트렌드
+                            </h3>
+                            <div class="h-48">
+                                <canvas id="predictionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- JavaScript -->
+    <script src="./assets/js/demo_fixed2.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // 페이지 로드시 알림 표시
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof AOS !== 'undefined') {
+                AOS.init({ duration: 800, easing: 'ease-in-out', once: true, mirror: false });
+            }
+        });
+    </script>
+</body>
+</html>
