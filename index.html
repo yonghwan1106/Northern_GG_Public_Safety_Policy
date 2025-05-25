@@ -47,6 +47,119 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FORCE BUTTON ACTIVATION SCRIPT -->
+    <script>
+        // Immediate button activation
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('FORCE: DOMContentLoaded - Activating buttons');
+            activateHeroButtons();
+        });
+        
+        window.addEventListener('load', function() {
+            console.log('FORCE: Window loaded - Re-activating buttons');
+            setTimeout(activateHeroButtons, 100);
+            setTimeout(activateHeroButtons, 500);
+            setTimeout(activateHeroButtons, 1000);
+        });
+        
+        function activateHeroButtons() {
+            console.log('FORCE: Activating hero buttons...');
+            
+            // Force style injection
+            if (!document.getElementById('force-button-styles')) {
+                const style = document.createElement('style');
+                style.id = 'force-button-styles';
+                style.textContent = `
+                    .hero-audio-btn, .hero-demo-btn, .hero-button-container a {
+                        pointer-events: all !important;
+                        z-index: 999999 !important;
+                        position: relative !important;
+                        opacity: 1 !important;
+                        display: inline-block !important;
+                        visibility: visible !important;
+                        cursor: pointer !important;
+                        animation: none !important;
+                        transform: none !important;
+                        touch-action: manipulation !important;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // Find and activate buttons
+            const buttons = document.querySelectorAll('.hero-audio-btn, .hero-demo-btn, #hero-slider a, .hero-button-container a');
+            console.log('FORCE: Found', buttons.length, 'buttons to activate');
+            
+            buttons.forEach((btn, index) => {
+                console.log(`FORCE: Activating button ${index}:`, btn.textContent?.trim());
+                
+                // Force all critical styles
+                const styles = {
+                    'pointer-events': 'all',
+                    'z-index': '999999',
+                    'position': 'relative',
+                    'opacity': '1',
+                    'display': 'inline-block',
+                    'visibility': 'visible',
+                    'cursor': 'pointer',
+                    'animation': 'none',
+                    'transform': 'none',
+                    'touch-action': 'manipulation'
+                };
+                
+                Object.assign(btn.style, styles);
+                
+                // Remove conflicting classes
+                btn.classList.remove('pointer-events-none', 'opacity-0', 'invisible');
+                
+                // Add click handlers
+                if (btn.textContent?.includes('음성으로 듣기') || btn.href?.includes('notebooklm')) {
+                    btn.onclick = function(e) {
+                        console.log('FORCE: Audio button clicked!');
+                        e.preventDefault();
+                        window.open('https://notebooklm.google.com/notebook/8330c6eb-b28e-4cef-9ffe-5622eb98c4e3/audio', '_blank');
+                        return false;
+                    };
+                } else if (btn.textContent?.includes('데모 체험') || btn.href?.includes('demo.html')) {
+                    btn.onclick = function(e) {
+                        console.log('FORCE: Demo button clicked!');
+                        e.preventDefault();
+                        window.location.href = 'demo.html';
+                        return false;
+                    };
+                }
+                
+                // Test click detection
+                btn.addEventListener('click', function(e) {
+                    console.log('FORCE: Click detected on:', this.textContent?.trim());
+                }, true);
+                
+                btn.addEventListener('mouseenter', function() {
+                    console.log('FORCE: Hover detected on:', this.textContent?.trim());
+                    this.style.opacity = '1';
+                    this.style.transform = 'scale(1.05)';
+                });
+                
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        }
+        
+        // Continuous monitoring
+        setInterval(function() {
+            const buttons = document.querySelectorAll('.hero-audio-btn, .hero-demo-btn');
+            buttons.forEach(btn => {
+                if (btn.style.pointerEvents !== 'all') {
+                    console.log('FORCE: Re-activating button:', btn.textContent?.trim());
+                    btn.style.pointerEvents = 'all';
+                    btn.style.opacity = '1';
+                    btn.style.zIndex = '999999';
+                }
+            });
+        }, 2000);
+    </script>
 </head>
 <body class="font-sans bg-gray-50">
     <!-- Navigation -->
@@ -109,20 +222,6 @@
                     <p class="text-xl md:text-2xl mb-8 text-police-light">
                         AI와 빅데이터로 만드는 스마트 치안 솔루션
                     </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button onclick="alert('음성 버튼 클릭됨!'); window.open('https://notebooklm.google.com/notebook/8330c6eb-b28e-4cef-9ffe-5622eb98c4e3/audio', '_blank');" 
-                               class="bg-safety-orange hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 cursor-pointer"
-                               style="pointer-events: all !important; z-index: 9999 !important; position: relative !important;">
-                            <i class="fas fa-play mr-2"></i>
-                            음성으로 듣기
-                        </button>
-                        <button onclick="alert('데모 버튼 클릭됨!'); window.location.href='demo.html';" 
-                               class="border-2 border-white text-white hover:bg-white hover:text-police-navy px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 cursor-pointer"
-                               style="pointer-events: all !important; z-index: 9999 !important; position: relative !important;">
-                            <i class="fas fa-desktop mr-2"></i>
-                            데모 체험
-                        </button>
-                    </div>
                 </div>
             </div>
 
